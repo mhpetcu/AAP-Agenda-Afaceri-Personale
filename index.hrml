@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TDL - To Do List cu calendar și oră</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f9f9f9;
+    --text: #1a1a1a;
+    --card: #ffffff;
+    --accent: #f9f9f9;
+    --red: #dc3545;
+  }
+
+  body.dark {
+    --bg: #121212;
+    --text: #e0e0e0;
+    --card: #1e1e1e;
+    --accent: #0e0e0e;
+    --red: #ff6b6b;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Roboto', 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 1rem;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 3.2rem;
+    margin-bottom: 0.3rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .submotto {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 2rem;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .toggle-dark {
+    float: right;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    background: none;
+    color: var(--accent);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    font-size: 1.2rem;
+  }
+
+  form {
+    background: var(--card);
+    padding: 1.2rem;
+    border-radius: 12px;
+    display: grid;
+    gap: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: relative;
+  }
+
+  input, select, button, textarea {
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  body.dark input,
+  body.dark select,
+  body.dark textarea {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border: 1px solid #555;
+  }
+
+  .calendar-time-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Calendar */
+  .calendar {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 300px;
+    z-index: 1000;
+    display: none;
+  }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--accent);
+    cursor: pointer;
+  }
+
+  .calendar-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 0.5rem;
+  }
+
+  .calendar-day, .calendar-date {
+    text-align: center;
+    padding: 0.4rem 0;
+    border-radius: 6px;
+  }
+
+  .calendar-date {
+    cursor: pointer;
+  }
+
+  .calendar-date:hover,
+  .calendar-date.selected {
+    background: var(--accent);
+    color: white;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+  }
+
+  .task {
+    background: var(--card);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .task-info {
+    flex: 1 1 60%;
+  }
+
+  .task-actions {
+    flex: 1 1 35%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .task p {
+    margin: 0.2rem 0;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    color: white;
+    margin-right: 0.5rem;
+  }
+
+  .urgent { background: #dc3545; }
+  .normal { background: #28a745; }
+  .status-in { background: #ffc107; color: black; }
+  .status-out { background: #17a2b8; }
+
+  /* Clasa pentru task-urile cu deadline trecut */
+  .overdue {
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  @media (max-width: 500px) {
+    .task {
+      flex-direction: column;
+    }
+    .task-actions {
+      justify-content: flex-start;
+    }
+  }
+
+  .floater {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    user-select: none;
+    opacity: 0.7;
+  }
+
+  .submitsave {
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <button class="toggle-dark" id="darkToggle">🌓</button>
+  <h1>TDL</h1>
+  <p class="submotto">Listă Personală de Taskuri</p>
+  <form id="taskForm" autocomplete="off">
+    <input type="text" id="title" placeholder="Ce ai de făcut?" required />
+    <textarea id="details" rows="2" placeholder="Detalii (opțional)"></textarea>
+    <select id="priority">
+      <option value="normal">Prioritate: Normal</option>
+      <option value="urgent">Prioritate: Urgent</option>
+    </select>
+    <select id="status">
+      <option value="in">Status: În curs</option>
+      <option value="out">Status: Gata</option>
+    </select>
+    <div class="calendar-time-container">
+      <input type="text" id="deadline" placeholder="Deadline" readonly />
+      <input type="time" id="deadlineTime" />
+    </div>
+    <div class="calendar" id="calendar">
+      <div class="calendar-header">
+        <button id="prevMonth" type="button">‹</button>
+        <div class="calendar-title" id="calendarTitle">Iunie 2025</div>
+        <button id="nextMonth" type="button">›</button>
+      </div>
+      <div class="calendar-grid" id="calendarDays"></div>
+    </div>
+    <button type="submit" class="submitsave">Salvează task</button>
+  </form>
+
+  <ul id="taskList"></ul>
+</div>
+
+<div class="floater">by @mhpetcu</div>
+
+<script>
+  // Dark mode toggle
+  document.getElementById("darkToggle").addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+  });
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+  }
+
+  // Calendar & Date selection
+  (() => {
+    const calendar = document.getElementById('calendar');
+    const deadlineInput = document.getElementById('deadline');
+    let currentDate = new Date();
+    let selectedDate = null;
+
+    const days = ['Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ', 'Du'];
+
+    function buildCalendar(year, month) {
+      calendarDays.innerHTML = '';
+      // Update title
+      const monthNamesRo = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
+      calendarTitle.textContent = monthNamesRo[month] + ' ' + year;
+
+      // Zile săptămână
+      days.forEach(day => {
+        const d = document.createElement('div');
+        d.className = 'calendar-day';
+        d.textContent = day;
+        calendarDays.appendChild(d);
+      });
+
+      // Prima zi a lunii
+      const firstDay = new Date(year, month, 1);
+      let startDay = firstDay.getDay() - 1;
+      if (startDay < 0) startDay = 6;
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // Empty slots before start day
+      for(let i = 0; i < startDay; i++) {
+        const emptyCell = document.createElement('div');
+        calendarDays.appendChild(emptyCell);
+      }
+
+      for(let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'calendar-date';
+        dayCell.textContent = dayNum;
+
+        const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+
+        if (selectedDate === dateStr) {
+          dayCell.classList.add('selected');
+        }
+
+        dayCell.onclick = () => {
+          selectedDate = dateStr;
+          deadlineInput.value = dateStr;
+          calendar.style.display = 'none';
+          buildCalendar(year, month);
+        };
+
+        calendarDays.appendChild(dayCell);
+      }
+    }
+
+    const calendarTitle = document.getElementById('calendarTitle');
+    const calendarDays = document.getElementById('calendarDays');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+
+    prevMonthBtn.onclick = () => {
+      if (currentMonth === 0) {
+        currentYear--;
+        currentMonth = 11;
+      } else {
+        currentMonth--;
+      }
+      buildCalendar(currentYear, currentMonth);
+    };
+
+    nextMonthBtn.onclick = () => {
+      if (currentMonth === 11) {
+        currentYear++;
+        currentMonth = 0;
+      } else {
+        currentMonth++;
+      }
+      buildCalendar(currentYear, currentMonth);
+    };
+
+    deadlineInput.addEventListener('click', () => {
+      if (calendar.style.display === 'block') {
+        calendar.style.display = 'none';
+      } else {
+        // poziționează sub input deadline
+        calendar.style.top = (deadlineInput.offsetTop + deadlineInput.offsetHeight + 5) + 'px';
+        calendar.style.left = deadlineInput.offsetLeft + 'px';
+        calendar.style.display = 'block';
+      }
+    });
+
+    document.addEventListener('click', e => {
+      if (!calendar.contains(e.target) && e.target !== deadlineInput) {
+        calendar.style.display = 'none';
+      }
+    });
+
+    if(deadlineInput.value) {
+      selectedDate = deadlineInput.value;
+    }
+
+    buildCalendar(currentYear, currentMonth);
+  })();
+
+  // Tasks management
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  let editIndex = null;
+
+  function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  // Funcție verificare dacă taskul a trecut deadline-ul (data+ora)
+  function isOverdue(task) {
+    if (!task.deadline) return false;
+    if (task.status !== 'in') return false;
+
+    const now = new Date();
+    // deadline = data + ora (dacă nu există ora considerăm 23:59)
+    let deadlineDateTimeStr = task.deadline;
+    if (task.deadlineTime) {
+      deadlineDateTimeStr += 'T' + task.deadlineTime;
+    } else {
+      deadlineDateTimeStr += 'T23:59';
+    }
+
+    const deadlineDate = new Date(deadlineDateTimeStr);
+    return now > deadlineDate;
+  }
+
+  function renderTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+    tasks.forEach((task, i) => {
+      const li = document.createElement("li");
+      li.className = "task";
+      if (isOverdue(task)) li.classList.add('overdue');
+      li.innerHTML = `
+        <div class="task-info">
+          <p><strong>${task.title}</strong></p>
+          <p>
+            <span class="badge ${task.priority}">${
+        task.priority === "urgent" ? "Urgent" : "Normal"
+      }</span>
+            <span class="badge ${
+              task.status === "in" ? "status-in" : "status-out"
+            }">${task.status === "in" ? "În curs" : "Gata"}</span>
+          </p>
+          <p>Deadline: ${task.deadline || "—"} ${task.deadlineTime || ""}</p>
+          <p>Detalii: ${task.details || "—"}</p>
+        </div>
+        <div class="task-actions">
+          <button onclick="editTask(${i})">✏️</button>
+          <button onclick="deleteTask(${i})">🗑️</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  function editTask(index) {
+    const t = tasks[index];
+    document.getElementById("title").value = t.title;
+    document.getElementById("details").value = t.details || "";
+    document.getElementById("priority").value = t.priority;
+    document.getElementById("status").value = t.status;
+    document.getElementById("deadline").value = t.deadline;
+    document.getElementById("deadlineTime").value = t.deadlineTime || "";
+    editIndex = index;
+  }
+
+  function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+  }
+
+  document.getElementById("taskForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const title = document.getElementById("title").value.trim();
+    const details = document.getElementById("details").value.trim();
+    const priority = document.getElementById("priority").value;
+    const status = document.getElementById("status").value;
+    const deadline = document.getElementById("deadline").value;
+    const deadlineTime = document.getElementById("deadlineTime").value;
+
+    const newTask = { title, details, priority, status, deadline, deadlineTime };
+
+    if (editIndex !== null) {
+      tasks[editIndex] = newTask;
+      editIndex = null;
+    } else {
+      tasks.push(newTask);
+    }
+
+    saveTasks();
+    renderTasks();
+    this.reset();
+  });
+
+  renderTasks();
+</script>
+</body>
+</html>
