@@ -200,7 +200,7 @@
       flex-direction: column;
     }
     .task-actions {
-      justify-content: flex-start;
+      justify-content: flex-end; /* Aliniere la dreapta pe mobil */
     }
     .calendar-time-container {
       flex-direction: column;
@@ -499,7 +499,6 @@
       return 0;
     }
     if (criteria === 'priority') {
-      // urgent vine înainte de normal
       if (a.priority === b.priority) return 0;
       if (a.priority === 'urgent') return -1;
       if (b.priority === 'urgent') return 1;
@@ -509,107 +508,120 @@
 
   function renderTasks() {
     taskListElem.innerHTML = '';
+
+    // Sortează după criteriul selectat
     tasks.sort(compareTasks);
 
-    if(tasks.length === 0){
-      taskListElem.innerHTML = '<li>Lista este goală.</li>';
-      return;
-    }
-
-    const nowDate = new Date();
-    for (let i = 0; i < tasks.length; i++) {
-      const t = tasks[i];
+    tasks.forEach((task, i) => {
       const li = document.createElement('li');
       li.className = 'task';
 
-      const taskInfo = document.createElement('div');
-      taskInfo.className = 'task-info';
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'task-info';
 
-      const title = document.createElement('p');
-      title.textContent = t.title;
-      title.style.fontWeight = '600';
+      const titleP = document.createElement('p');
+      titleP.textContent = task.title;
+      if (task.status === 'out') {
+        titleP.style.textDecoration = 'line-through';
+        titleP.style.opacity = '0.7';
+      }
+      infoDiv.appendChild(titleP);
 
-      const details = document.createElement('p');
-      details.textContent = t.details || '';
-
-      // Prioritate badge
-      const priorityBadge = document.createElement('span');
-      priorityBadge.className = 'badge ' + (t.priority === 'urgent' ? 'urgent' : 'normal');
-      priorityBadge.textContent = t.priority === 'urgent' ? 'Urgent' : 'Normal';
-
-      // Status badge
-      const statusBadge = document.createElement('span');
-      statusBadge.className = 'badge ' + (t.status === 'in' ? 'status-in' : 'status-out');
-      statusBadge.textContent = t.status === 'in' ? 'În curs' : 'Gata';
-
-      // Deadline text
-      let deadlineText = '';
-      if (t.deadline) {
-        deadlineText = formatDateDisplay(t.deadline);
-        if (t.deadlineTime) deadlineText += ' ' + t.deadlineTime;
+      if (task.details) {
+        const detP = document.createElement('p');
+        detP.textContent = task.details;
+        detP.style.fontSize = '0.9rem';
+        detP.style.opacity = '0.7';
+        infoDiv.appendChild(detP);
       }
 
-      const deadlineP = document.createElement('p');
-      deadlineP.textContent = deadlineText;
-      // Dacă deadline trecut, pune clasa overdue (doar dacă statusul e 'in')
-      if(t.deadline && t.status === 'in') {
-        const dlDate = new Date(t.deadline + 'T' + (t.deadlineTime || '00:00'));
-        if(dlDate < nowDate) {
+      // Deadline & ora deadline
+      if (task.deadline) {
+        const deadlineP = document.createElement('p');
+        const dateDisplay = formatDateDisplay(task.deadline);
+        let timeDisplay = task.deadlineTime ? ' ' + task.deadlineTime : '';
+        deadlineP.textContent = `Deadline: ${dateDisplay}${timeDisplay}`;
+        deadlineP.style.fontSize = '0.9rem';
+        deadlineP.style.fontWeight = '600';
+        deadlineP.style.marginTop = '0.4rem';
+        deadlineP.className = '';
+
+        // Dacă termenul a trecut și statusul e "in"
+        const now = new Date();
+        const deadlineDateTime = new Date(task.deadline + 'T' + (task.deadlineTime ? task.deadlineTime : '23:59'));
+        if (task.status === 'in' && deadlineDateTime < now) {
           deadlineP.classList.add('overdue');
         }
+
+        infoDiv.appendChild(deadlineP);
       }
 
-      taskInfo.appendChild(title);
-      if(details.textContent) taskInfo.appendChild(details);
-      taskInfo.appendChild(priorityBadge);
-      taskInfo.appendChild(statusBadge);
-      if(deadlineText) taskInfo.appendChild(deadlineP);
+      // Prioritate și status badges
+      const badgesDiv = document.createElement('div');
+      if (task.priority) {
+        const priSpan = document.createElement('span');
+        priSpan.className = 'badge ' + (task.priority === 'urgent' ? 'urgent' : 'normal');
+        priSpan.textContent = 'Prioritate: ' + (task.priority === 'urgent' ? 'Urgent' : 'Normal');
+        badgesDiv.appendChild(priSpan);
+      }
+      if (task.status) {
+        const statSpan = document.createElement('span');
+        statSpan.className = 'badge ' + (task.status === 'in' ? 'status-in' : 'status-out');
+        statSpan.textContent = task.status === 'in' ? 'În curs' : 'Gata';
+        badgesDiv.appendChild(statSpan);
+      }
+      infoDiv.appendChild(badgesDiv);
 
-      // Acțiuni (edit, șterge)
-      const taskActions = document.createElement('div');
-      taskActions.className = 'task-actions';
+      li.appendChild(infoDiv);
+
+      // Butoane acțiuni
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'task-actions';
 
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Editează';
       editBtn.type = 'button';
-      editBtn.onclick = () => {
-        editIndex = i;
-        fillFormWithTask(t);
-      };
+      editBtn.addEventListener('click', () => {
+        fillFormForEdit(i);
+      });
+      actionsDiv.appendChild(editBtn);
 
       const deleteBtn = document.createElement('button');
       deleteBtn.textContent = 'Șterge';
       deleteBtn.type = 'button';
-      deleteBtn.onclick = () => {
-        if(confirm('Ștergi acest task?')) {
-          tasks.splice(i,1);
+      deleteBtn.style.color = 'var(--text)';
+      deleteBtn.addEventListener('click', () => {
+        if (confirm('Ștergi taskul?')) {
+          tasks.splice(i, 1);
           saveTasks();
           renderTasks();
+          clearForm();
         }
-      };
+      });
+      actionsDiv.appendChild(deleteBtn);
 
-      taskActions.appendChild(editBtn);
-      taskActions.appendChild(deleteBtn);
+      li.appendChild(actionsDiv);
 
-      li.appendChild(taskInfo);
-      li.appendChild(taskActions);
       taskListElem.appendChild(li);
-    }
-  }
-
-  function fillFormWithTask(task) {
-    document.getElementById('title').value = task.title;
-    document.getElementById('details').value = task.details || '';
-    document.getElementById('priority').value = task.priority;
-    document.getElementById('status').value = task.status;
-    document.getElementById('deadline').value = formatDateDisplay(task.deadline || '');
-    document.getElementById('deadlineTime').value = task.deadlineTime || '';
+    });
   }
 
   function clearForm() {
     taskForm.reset();
-    document.getElementById('deadline').value = '';
     editIndex = null;
+    taskForm.querySelector('button[type="submit"]').textContent = 'Salvează task';
+  }
+
+  function fillFormForEdit(i) {
+    const task = tasks[i];
+    editIndex = i;
+    document.getElementById('title').value = task.title;
+    document.getElementById('details').value = task.details || '';
+    document.getElementById('priority').value = task.priority || 'normal';
+    document.getElementById('status').value = task.status || 'in';
+    document.getElementById('deadline').value = formatDateDisplay(task.deadline) || '';
+    document.getElementById('deadlineTime').value = task.deadlineTime || '';
+    taskForm.querySelector('button[type="submit"]').textContent = 'Actualizează task';
   }
 
   taskForm.addEventListener('submit', e => {
@@ -621,15 +633,15 @@
       status: document.getElementById('status').value,
       deadline: parseDateInput(document.getElementById('deadline').value),
       deadlineTime: document.getElementById('deadlineTime').value,
-      _addedAt: editIndex === null ? Date.now() : tasks[editIndex]._addedAt
+      _addedAt: editIndex !== null ? tasks[editIndex]._addedAt : Date.now(),
     };
 
-    if(!newTask.title) {
-      alert('Titlul este obligatoriu!');
+    if (!newTask.title) {
+      alert('Titlul taskului este obligatoriu!');
       return;
     }
 
-    if(editIndex !== null) {
+    if (editIndex !== null) {
       tasks[editIndex] = newTask;
     } else {
       tasks.push(newTask);
@@ -639,34 +651,33 @@
     clearForm();
   });
 
-  personalListBtn.onclick = () => {
-    if(currentList === 'personal') return;
-    switchList('personal');
-  };
-
-  workListBtn.onclick = () => {
-    if(currentList === 'work') return;
-    switchList('work');
-  };
-
-  sortSelect.onchange = () => {
-    renderTasks();
-  };
-
-  function switchList(newList) {
-    currentList = newList;
-    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[currentList])) || [];
-    // actualizează butoane active
-    personalListBtn.classList.toggle('active', currentList === 'personal');
-    personalListBtn.setAttribute('aria-pressed', currentList === 'personal');
-    workListBtn.classList.toggle('active', currentList === 'work');
-    workListBtn.setAttribute('aria-pressed', currentList === 'work');
+  personalListBtn.addEventListener('click', () => {
+    currentList = 'personal';
+    personalListBtn.classList.add('active');
+    personalListBtn.setAttribute('aria-pressed', 'true');
+    workListBtn.classList.remove('active');
+    workListBtn.setAttribute('aria-pressed', 'false');
+    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS.personal)) || [];
     clearForm();
     renderTasks();
-  }
+  });
 
-  // Initialize afișare la pornire
-  switchList(currentList);
+  workListBtn.addEventListener('click', () => {
+    currentList = 'work';
+    workListBtn.classList.add('active');
+    workListBtn.setAttribute('aria-pressed', 'true');
+    personalListBtn.classList.remove('active');
+    personalListBtn.setAttribute('aria-pressed', 'false');
+    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS.work)) || [];
+    clearForm();
+    renderTasks();
+  });
+
+  sortSelect.addEventListener('change', () => {
+    renderTasks();
+  });
+
+  renderTasks();
 </script>
 </body>
 </html>
