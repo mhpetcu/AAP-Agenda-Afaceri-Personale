@@ -29,7 +29,7 @@
     transition: background 0.3s, color 0.3s;
   }
   .container {
-    max-width: 600px;
+    max-width: 700px;
     margin: auto;
   }
   h1 {
@@ -53,187 +53,20 @@
     color: var(--accent);
     border: none;
     padding: 0.4rem 0.8rem;
-    font-size: 1.2rem;
-  }
-  form {
-    background: var(--card);
-    padding: 1.2rem;
-    border-radius: 12px;
-    display: grid;
-    gap: 0.8rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    position: relative;
-  }
-  input, select, button, textarea {
-    padding: 0.6rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: var(--card);
-    color: var(--text);
-    transition: all 0.2s;
-    font-family: 'Roboto', sans-serif;
-  }
-  button {
-    background: var(--accent);
-    color: var(--text);
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-family: 'Montserrat', sans-serif;
-  }
-  body.dark input,
-  body.dark select,
-  body.dark textarea {
-    background: #2a2a2a;
-    color: #e0e0e0;
-    border: 1px solid #555;
-  }
-  .calendar-time-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .calendar-time-container input[type="date"] {
-    flex: 2;
-  }
-  .calendar-time-container input[type="time"] {
-    flex: 1;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 1.5rem;
-  }
-  .task {
-    background: var(--card);
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-  .task-info {
-    flex: 1 1 60%;
-  }
-  .task-actions {
-    flex: 1 1 35%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-  .task p {
-    margin: 0.2rem 0;
-  }
-  .badge {
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.8rem;
-    border-radius: 5px;
-    color: white;
-    margin-right: 0.5rem;
+    font-size: 1.4rem;
     user-select: none;
-  }
-  .urgent { background: #dc3545; }
-  .normal { background: #28a745; }
-  .status-in { background: #ffc107; color: black; }
-  .status-out { background: #17a2b8; }
-  .overdue {
-    color: var(--red);
-    font-weight: 600;
-  }
-  .tag {
-    display: inline-block;
-    padding: 0.1rem 0.5rem;
-    border-radius: 4px;
-    margin-right: 0.3rem;
-    font-size: 0.75rem;
-    color: #fff;
-    user-select: none;
-    font-family: 'Roboto', sans-serif;
-  }
-  .tag-edit-btn {
-    margin-left: 5px;
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    font-size: 0.85rem;
-  }
-  .tag-input {
-    width: 120px;
-  }
-  .tags-container {
-    margin-top: 0.3rem;
-  }
-  .icon {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    margin-right: 5px;
-  }
-  /* Icone simple inline SVG ca background */
-  .icon-edit {
-    background: url('data:image/svg+xml;utf8,<svg fill="%23000" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM21.41 6.34a1.25 1.25 0 0 0 0-1.77L19.43 2.6a1.25 1.25 0 0 0-1.77 0L15.13 5.14l3.75 3.75 2.53-2.55z"/></svg>') no-repeat center center;
-    background-size: contain;
-  }
-  .icon-delete {
-    background: url('data:image/svg+xml;utf8,<svg fill="%23dc3545" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M16 9v10H8V9h8m-1.5-6H9.5l-1 1H5v2h14V4h-3.5l-1-1z"/></svg>') no-repeat center center;
-    background-size: contain;
-  }
-  /* Responsive */
-  @media (max-width: 500px) {
-    .task {
-      flex-direction: column;
-    }
-    .task-actions {
-      justify-content: flex-end !important;
-      margin-top: 0.5rem;
-    }
-    .calendar-time-container {
-      flex-direction: column;
-    }
-    .calendar-time-container input[type="date"], 
-    .calendar-time-container input[type="time"] {
-      flex: unset;
-      width: 100%;
-    }
-    .toggle-dark {
-      float: none;
-      display: block;
-      margin: 0 auto 1rem auto;
-    }
-  }
-  .floater {
-    position: relative;
-    margin-bottom: 80px;
-    text-align: center;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.85rem;
-    font-family: 'Roboto', sans-serif;
-    color: var(--text);
-    user-select: none;
-    opacity: 0.7;
-  }
-  .submitsave {
-    color: var(--text);
   }
   .switch-container {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
     gap: 1rem;
+    flex-wrap: wrap;
   }
   .switch-container button {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    padding: 0.4rem 1rem;
+    padding: 0.5rem 1rem;
     cursor: pointer;
     border-radius: 8px;
     border: none;
@@ -250,9 +83,12 @@
   .sort-container {
     display: flex;
     justify-content: center;
-    margin-top: 1rem;
     margin-bottom: 1rem;
     gap: 1rem;
+  }
+  .sort-container label {
+    align-self: center;
+    font-family: 'Montserrat', sans-serif;
   }
   .sort-container select {
     padding: 0.3rem 0.6rem;
@@ -261,36 +97,140 @@
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
   }
-  /* Tag color picker popup */
-  #tagColorPicker {
-    position: absolute;
-    display: none;
-    z-index: 1500;
-    padding: 5px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  form {
+    background: var(--card);
+    padding: 1rem 1.2rem 1.4rem;
+    border-radius: 12px;
+    display: grid;
+    gap: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: relative;
+    margin-bottom: 1rem;
   }
-  #tagColorPicker input[type=color] {
-    width: 50px;
-    height: 30px;
+  input, select, button, textarea {
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+  }
+  button {
+    background: var(--accent);
+    color: var(--text);
     border: none;
     cursor: pointer;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+  }
+  body.dark input,
+  body.dark select,
+  body.dark textarea {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border: 1px solid #555;
+  }
+  .calendar-time-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .calendar-time-container input[type="date"],
+  .calendar-time-container input[type="time"] {
+    flex: 1;
+    min-width: 120px;
+  }
+  ul {
+    list-style: none;
     padding: 0;
-    background: none;
+    margin-top: 0;
+  }
+  .task {
+    background: var(--card);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .task-info {
+    flex: 1 1 65%;
+    min-width: 250px;
+  }
+  .task-actions {
+    flex: 1 1 30%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .task p {
+    margin: 0.2rem 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    color: white;
+    margin-right: 0.5rem;
+    font-weight: 600;
+    user-select: none;
+  }
+  .urgent { background: #dc3545; }
+  .normal { background: #28a745; }
+  .status-in { background: #ffc107; color: black; }
+  .status-out { background: #17a2b8; }
+  .overdue {
+    color: var(--red);
+    font-weight: 700;
+  }
+  .tag-badge {
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+  }
+  @media (max-width: 700px) {
+    .task {
+      flex-direction: column;
+    }
+    .task-actions {
+      justify-content: flex-start;
+    }
+    .calendar-time-container {
+      flex-direction: column;
+    }
+  }
+  .floater {
+    position: relative;
+    margin-bottom: 80px;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    user-select: none;
+    opacity: 0.7;
   }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="container" role="main">
   <button class="toggle-dark" id="darkToggle" aria-label="Toggle dark mode">🌓</button>
   <h1>AAP</h1>
   <p class="submotto">Agenda Afacerilor Personale</p>
 
-  <div class="switch-container" role="radiogroup" aria-label="Alege lista">
-    <button id="personalListBtn" class="active" aria-pressed="true" type="button">Afaceri Interne</button>
-    <button id="workListBtn" aria-pressed="false" type="button">Afaceri Externe</button>
-    <button id="operationalListBtn" aria-pressed="false" type="button">Afaceri Operaționale</button>
-  </div>
+  <nav class="switch-container" role="tablist" aria-label="Selectează lista afacerilor">
+    <button id="btnPersonal" class="active" role="tab" aria-selected="true" aria-controls="listPersonal" tabindex="0">Afaceri Interne</button>
+    <button id="btnExternal" role="tab" aria-selected="false" aria-controls="listExternal" tabindex="-1">Afaceri Externe</button>
+    <button id="btnOperational" role="tab" aria-selected="false" aria-controls="listOperational" tabindex="-1">Afaceri Operaționale</button>
+  </nav>
 
   <div class="sort-container">
     <label for="sortSelect">Sortare:</label>
@@ -304,44 +244,48 @@
   <form id="taskForm" autocomplete="off" aria-label="Formular adăugare/modificare task">
     <input type="text" id="title" placeholder="Ce ai de făcut?" required aria-required="true" aria-label="Titlu task" />
     <textarea id="details" rows="2" placeholder="Detalii (opțional)" aria-label="Detalii task"></textarea>
-    <select id="priority" aria-label="Prioritate">
+    <select id="priority" aria-label="Selectează prioritatea">
       <option value="normal">Prioritate: Normal</option>
       <option value="urgent">Prioritate: Urgent</option>
     </select>
-    <select id="status" aria-label="Status">
+    <select id="status" aria-label="Selectează statusul">
       <option value="in">Status: În curs</option>
       <option value="out">Status: Gata</option>
     </select>
-    <div class="calendar-time-container">
-      <input type="date" id="deadline" aria-label="Deadline" />
-      <input type="time" id="deadlineTime" aria-label="Ora deadline" />
+    <div class="calendar-time-container" aria-label="Selectează deadline-ul">
+      <input type="date" id="deadline" aria-label="Data limită" />
+      <input type="time" id="deadlineTime" aria-label="Ora limită" />
     </div>
     <div>
-      <label for="tagsInput" style="display:block; margin-top: 0.4rem;">Taguri (separate prin virgulă):</label>
-      <input type="text" id="tagsInput" placeholder="ex: important, client, factură" aria-label="Taguri task" />
-      <small style="font-size: 0.8rem; color: #666;">Apasă Enter pentru a adăuga tagul</small>
+      <label for="tagInput" style="font-weight:600; margin-right:0.5rem;">Tag:</label>
+      <input type="text" id="tagInput" placeholder="Nume tag" aria-label="Nume tag" style="width:120px;" />
+      <input type="color" id="tagColor" value="#FF0000" aria-label="Culoare tag" style="width:60px; vertical-align:middle; margin-left:0.3rem;" />
+      <button type="button" id="addTagBtn" aria-label="Adaugă tag" style="margin-left:0.5rem; padding:0.3rem 0.8rem; font-size:0.9rem;">Adaugă</button>
     </div>
-    <button type="submit" class="submitsave" aria-label="Salvează task">Salvează task</button>
+    <div id="tagsContainer" aria-live="polite" style="margin-top:0.4rem;"></div>
+    <button type="submit" style="margin-top:0.8rem;">Salvează task</button>
   </form>
 
   <ul id="taskList" aria-live="polite" aria-label="Lista taskurilor"></ul>
 </div>
 
-<div id="tagColorPicker" role="dialog" aria-modal="true" aria-label="Selectează culoarea tagului">
-  <input type="color" id="colorPicker" aria-label="Selector culoare" />
-</div>
-
 <div class="floater">by @mhpetcu</div>
 
 <script>
-  // Formatează data din yyyy-mm-dd în dd/mm/yyyy
-  const formatDateDisplay = (dateStr) => {
+  // UTILITARE
+  function formatDateDisplay(dateStr) {
     if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-');
     return `${day}/${month}/${year}`;
+  }
+  // Salvare / încărcare liste în localStorage, câte o listă pe categorie
+  const STORAGE_KEYS = {
+    personal: 'tasks_personal',
+    external: 'tasks_external',
+    operational: 'tasks_operational',
   };
 
-  // Dark mode toggle
+  // Mod dark toggle
   const darkToggle = document.getElementById("darkToggle");
   darkToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
@@ -351,38 +295,132 @@
     document.body.classList.add("dark");
   }
 
-  // Liste și sortare
-  const personalListBtn = document.getElementById('personalListBtn');
-  const workListBtn = document.getElementById('workListBtn');
-  const operationalListBtn = document.getElementById('operationalListBtn');
+  // Elemente UI
+  const btnPersonal = document.getElementById('btnPersonal');
+  const btnExternal = document.getElementById('btnExternal');
+  const btnOperational = document.getElementById('btnOperational');
   const sortSelect = document.getElementById('sortSelect');
   const taskListElem = document.getElementById('taskList');
   const taskForm = document.getElementById('taskForm');
-
-  // Stocare localStorage pe categorii
-  const STORAGE_KEYS = {
-    personal: 'tasks_personal',
-    work: 'tasks_work',
-    operational: 'tasks_operational'
-  };
+  const titleInput = document.getElementById('title');
+  const detailsInput = document.getElementById('details');
+  const prioritySelect = document.getElementById('priority');
+  const statusSelect = document.getElementById('status');
+  const deadlineInput = document.getElementById('deadline');
+  const deadlineTimeInput = document.getElementById('deadlineTime');
+  const tagInput = document.getElementById('tagInput');
+  const tagColorInput = document.getElementById('tagColor');
+  const addTagBtn = document.getElementById('addTagBtn');
+  const tagsContainer = document.getElementById('tagsContainer');
 
   let currentList = 'personal';
-  let tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[currentList])) || [];
+  let tasks = [];
   let editIndex = null;
+  let currentTags = []; // tag-urile unui task temporar
 
-  // Pentru taguri - map {tagName: color}
-  let tagColors = JSON.parse(localStorage.getItem('tagColors')) || {};
+  // Schimbă tab lista activă
+  function switchList(listName) {
+    currentList = listName;
+    btnPersonal.classList.toggle('active', listName === 'personal');
+    btnPersonal.setAttribute('aria-selected', listName === 'personal');
+    btnPersonal.tabIndex = listName === 'personal' ? 0 : -1;
 
-  // Elemente tagColorPicker
-  const tagColorPicker = document.getElementById('tagColorPicker');
-  const colorPicker = document.getElementById('colorPicker');
+    btnExternal.classList.toggle('active', listName === 'external');
+    btnExternal.setAttribute('aria-selected', listName === 'external');
+    btnExternal.tabIndex = listName === 'external' ? 0 : -1;
 
-  // Functie salvare tagColors localStorage
-  function saveTagColors() {
-    localStorage.setItem('tagColors', JSON.stringify(tagColors));
+    btnOperational.classList.toggle('active', listName === 'operational');
+    btnOperational.setAttribute('aria-selected', listName === 'operational');
+    btnOperational.tabIndex = listName === 'operational' ? 0 : -1;
+
+    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[listName])) || [];
+    editIndex = null;
+    clearForm();
+    renderTasks();
   }
 
-  // Functie comparare pentru sortare
+  btnPersonal.addEventListener('click', () => switchList('personal'));
+  btnExternal.addEventListener('click', () => switchList('external'));
+  btnOperational.addEventListener('click', () => switchList('operational'));
+
+  // Sortare
+  sortSelect.addEventListener('change', () => {
+    renderTasks();
+  });
+
+  // Salvare in localStorage
+  function saveTasks() {
+    localStorage.setItem(STORAGE_KEYS[currentList], JSON.stringify(tasks));
+  }
+
+  // Adaugă un tag temporar în formular
+  addTagBtn.addEventListener('click', () => {
+    const tagName = tagInput.value.trim();
+    const tagColor = tagColorInput.value;
+    if (!tagName) {
+      alert("Numele tag-ului nu poate fi gol.");
+      return;
+    }
+    // Dacă tag există deja, nu-l adaugă
+    if (currentTags.find(t => t.name.toLowerCase() === tagName.toLowerCase())) {
+      alert("Tag-ul există deja.");
+      return;
+    }
+    currentTags.push({name: tagName, color: tagColor});
+    tagInput.value = '';
+    renderCurrentTags();
+  });
+
+  // Afișează tag-urile temporare din formular, cu opțiune ștergere și editare culoare
+  function renderCurrentTags() {
+    tagsContainer.innerHTML = '';
+    currentTags.forEach((tag, idx) => {
+      const span = document.createElement('span');
+      span.className = 'tag-badge';
+      span.style.backgroundColor = tag.color;
+      span.textContent = tag.name;
+      span.title = "Click pentru a schimba culoarea";
+      span.style.marginRight = '0.4rem';
+      span.style.padding = '0.2rem 0.5rem';
+      span.style.borderRadius = '5px';
+      span.style.userSelect = 'none';
+
+      // Clic pe tag pentru editare culoare
+      span.addEventListener('click', () => {
+        const newColor = prompt("Introdu o culoare hex pentru tag-ul '"+tag.name+"':", tag.color);
+        if(newColor && /^#([0-9A-F]{3}){1,2}$/i.test(newColor.trim())) {
+          tag.color = newColor.trim();
+          renderCurrentTags();
+        } else if(newColor !== null) {
+          alert('Codul de culoare nu este valid. Trebuie un hex precum #FF0000');
+        }
+      });
+
+      // Adăugăm buton mic de ștergere
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '×';
+      delBtn.style.marginLeft = '0.3rem';
+      delBtn.style.border = 'none';
+      delBtn.style.background = 'transparent';
+      delBtn.style.color = 'white';
+      delBtn.style.fontWeight = '700';
+      delBtn.style.cursor = 'pointer';
+      delBtn.title = 'Șterge tag';
+      delBtn.style.userSelect = 'none';
+      delBtn.style.padding = '0 0.1rem';
+
+      delBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        currentTags.splice(idx, 1);
+        renderCurrentTags();
+      });
+
+      span.appendChild(delBtn);
+      tagsContainer.appendChild(span);
+    });
+  }
+
+  // Sortare funcție
   function compareTasks(a, b) {
     const criteria = sortSelect.value;
     if (criteria === 'added') {
@@ -392,17 +430,13 @@
       if (!a.deadline && b.deadline) return 1;
       if (a.deadline && !b.deadline) return -1;
       if (!a.deadline && !b.deadline) return 0;
-
       if (a.deadline < b.deadline) return -1;
       if (a.deadline > b.deadline) return 1;
-
       if (!a.deadlineTime && b.deadlineTime) return 1;
       if (a.deadlineTime && !b.deadlineTime) return -1;
       if (!a.deadlineTime && !b.deadlineTime) return 0;
-
       if (a.deadlineTime < b.deadlineTime) return -1;
       if (a.deadlineTime > b.deadlineTime) return 1;
-
       return 0;
     }
     if (criteria === 'priority') {
@@ -413,38 +447,32 @@
     return 0;
   }
 
-  function saveTasks() {
-    localStorage.setItem(STORAGE_KEYS[currentList], JSON.stringify(tasks));
-  }
-
+  // Render taskuri
   function renderTasks() {
     taskListElem.innerHTML = '';
-    tasks.sort(compareTasks);
-
-    if(tasks.length === 0){
+    if (tasks.length === 0) {
       taskListElem.innerHTML = '<li>Lista este goală.</li>';
       return;
     }
-
+    tasks.sort(compareTasks);
     const nowDate = new Date();
 
-    tasks.forEach((t, i) => {
+    for (let i = 0; i < tasks.length; i++) {
+      const t = tasks[i];
       const li = document.createElement('li');
       li.className = 'task';
 
       const taskInfo = document.createElement('div');
       taskInfo.className = 'task-info';
 
-      // Titlu
       const title = document.createElement('p');
       title.textContent = t.title;
       title.style.fontWeight = '600';
 
-      // Detalii
       const details = document.createElement('p');
       details.textContent = t.details || '';
 
-      // Prioritate badge
+      // Priority badge
       const priorityBadge = document.createElement('span');
       priorityBadge.className = 'badge ' + (t.priority === 'urgent' ? 'urgent' : 'normal');
       priorityBadge.textContent = t.priority === 'urgent' ? 'Urgent' : 'Normal';
@@ -458,232 +486,123 @@
       let deadlineText = '';
       if (t.deadline) {
         deadlineText = formatDateDisplay(t.deadline);
-        if(t.deadlineTime){
-          deadlineText += ' ' + t.deadlineTime;
-        }
-        // Verifică dacă deadline-ul e trecut și statusul e "in"
-        const deadlineDate = new Date(t.deadline + 'T' + (t.deadlineTime || '23:59'));
-        if (deadlineDate < nowDate && t.status === 'in') {
-          deadlineText = '';
-          deadlineText = `[Peste termen] ${deadlineText}`;
-          deadlineText = deadlineText.trim();
-          // marcare culoare
-          deadlineText = `<span class="overdue">${deadlineText}</span>`;
+        if (t.deadlineTime) deadlineText += ' ' + t.deadlineTime;
+      }
+      const deadlineP = document.createElement('p');
+      deadlineP.textContent = deadlineText;
+      if (t.deadline && t.status === 'in') {
+        const dlDate = new Date(t.deadline + 'T' + (t.deadlineTime || '00:00'));
+        if (dlDate < nowDate) {
+          deadlineP.classList.add('overdue');
         }
       }
 
-      // Tags container
-      const tagsContainer = document.createElement('div');
-      tagsContainer.className = 'tags-container';
-      if (t.tags && t.tags.length > 0) {
+      // Tags display
+      const tagsDiv = document.createElement('div');
+      if (t.tags && t.tags.length) {
         t.tags.forEach(tag => {
           const tagSpan = document.createElement('span');
-          tagSpan.className = 'tag';
-          tagSpan.textContent = tag;
-          tagSpan.style.backgroundColor = tagColors[tag] || '#6c757d';
-
-          // Buton edit culoare tag
-          const editBtn = document.createElement('button');
-          editBtn.className = 'tag-edit-btn';
-          editBtn.title = 'Editează culoarea tagului';
-          editBtn.textContent = '🎨';
-          editBtn.type = 'button';
-          editBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openTagColorPicker(tagSpan, tag);
-          });
-          tagSpan.appendChild(editBtn);
-
-          tagsContainer.appendChild(tagSpan);
+          tagSpan.className = 'tag-badge';
+          tagSpan.style.backgroundColor = tag.color;
+          tagSpan.textContent = tag.name;
+          tagsDiv.appendChild(tagSpan);
         });
       }
 
-      // Creare element deadline
-      const deadlineElem = document.createElement('p');
-      deadlineElem.innerHTML = deadlineText;
-
-      // Grup badges și deadline
-      const badgeWrapper = document.createElement('p');
-      badgeWrapper.appendChild(priorityBadge);
-      badgeWrapper.appendChild(statusBadge);
-
       taskInfo.appendChild(title);
-      taskInfo.appendChild(details);
-      taskInfo.appendChild(badgeWrapper);
-      taskInfo.appendChild(deadlineElem);
-      taskInfo.appendChild(tagsContainer);
+      if(details.textContent) taskInfo.appendChild(details);
+      taskInfo.appendChild(priorityBadge);
+      taskInfo.appendChild(statusBadge);
+      if(deadlineText) taskInfo.appendChild(deadlineP);
+      if(tagsDiv.childNodes.length) taskInfo.appendChild(tagsDiv);
 
+      // Butoane editează/șterge
       const taskActions = document.createElement('div');
       taskActions.className = 'task-actions';
 
       const editBtn = document.createElement('button');
-      editBtn.setAttribute('aria-label', 'Editează task');
-      editBtn.className = 'icon icon-edit';
+      editBtn.textContent = 'Editează';
       editBtn.type = 'button';
-      editBtn.addEventListener('click', () => editTask(i));
+      editBtn.onclick = () => {
+        editIndex = i;
+        fillFormWithTask(t);
+        taskForm.querySelector('button[type=submit]').textContent = 'Modifică task';
+      };
 
       const deleteBtn = document.createElement('button');
-      deleteBtn.setAttribute('aria-label', 'Șterge task');
-      deleteBtn.className = 'icon icon-delete';
+      deleteBtn.textContent = 'Șterge';
       deleteBtn.type = 'button';
-      deleteBtn.addEventListener('click', () => deleteTask(i));
+      deleteBtn.onclick = () => {
+        if(confirm('Ștergi acest task?')) {
+          tasks.splice(i,1);
+          saveTasks();
+          renderTasks();
+          clearForm();
+        }
+      };
 
       taskActions.appendChild(editBtn);
       taskActions.appendChild(deleteBtn);
 
       li.appendChild(taskInfo);
       li.appendChild(taskActions);
-
       taskListElem.appendChild(li);
-    });
+    }
   }
 
-  function resetForm() {
+  // Completează formularul când editezi task
+  function fillFormWithTask(task) {
+    titleInput.value = task.title;
+    detailsInput.value = task.details || '';
+    prioritySelect.value = task.priority;
+    statusSelect.value = task.status;
+    deadlineInput.value = task.deadline || '';
+    deadlineTimeInput.value = task.deadlineTime || '';
+    currentTags = task.tags ? JSON.parse(JSON.stringify(task.tags)) : [];
+    renderCurrentTags();
+  }
+
+  // Curăță formularul
+  function clearForm() {
     taskForm.reset();
+    deadlineInput.value = '';
+    deadlineTimeInput.value = '';
+    currentTags = [];
+    renderCurrentTags();
     editIndex = null;
     taskForm.querySelector('button[type=submit]').textContent = 'Salvează task';
   }
 
-  function addOrUpdateTask(e) {
+  // Tratează submit formular
+  taskForm.addEventListener('submit', e => {
     e.preventDefault();
 
-    const title = document.getElementById('title').value.trim();
-    const details = document.getElementById('details').value.trim();
-    const priority = document.getElementById('priority').value;
-    const status = document.getElementById('status').value;
-    const deadline = document.getElementById('deadline').value; // yyyy-mm-dd ISO
-    const deadlineTime = document.getElementById('deadlineTime').value; // HH:mm
-    const tagsRaw = document.getElementById('tagsInput').value.trim();
-
-    if (!title) return alert('Titlul este obligatoriu.');
-
-    const tags = tagsRaw.length > 0
-      ? tagsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0)
-      : [];
-
-    if(editIndex === null) {
-      tasks.push({
-        title,
-        details,
-        priority,
-        status,
-        deadline,
-        deadlineTime,
-        tags,
-        _addedAt: Date.now(),
-      });
+    const newTask = {
+      title: titleInput.value.trim(),
+      details: detailsInput.value.trim(),
+      priority: prioritySelect.value,
+      status: statusSelect.value,
+      deadline: deadlineInput.value,
+      deadlineTime: deadlineTimeInput.value,
+      tags: JSON.parse(JSON.stringify(currentTags)),
+      _addedAt: editIndex === null ? Date.now() : tasks[editIndex]._addedAt,
+    };
+    if (!newTask.title) {
+      alert('Titlul este obligatoriu!');
+      return;
+    }
+    if (editIndex === null) {
+      tasks.push(newTask);
     } else {
-      tasks[editIndex] = {
-        ...tasks[editIndex],
-        title,
-        details,
-        priority,
-        status,
-        deadline,
-        deadlineTime,
-        tags,
-      };
+      tasks[editIndex] = newTask;
     }
     saveTasks();
     renderTasks();
-    resetForm();
-  }
-
-  function editTask(i) {
-    const t = tasks[i];
-    editIndex = i;
-    document.getElementById('title').value = t.title;
-    document.getElementById('details').value = t.details || '';
-    document.getElementById('priority').value = t.priority || 'normal';
-    document.getElementById('status').value = t.status || 'in';
-    document.getElementById('deadline').value = t.deadline || '';
-    document.getElementById('deadlineTime').value = t.deadlineTime || '';
-    document.getElementById('tagsInput').value = (t.tags || []).join(', ');
-    taskForm.querySelector('button[type=submit]').textContent = 'Modifică task';
-  }
-
-  function deleteTask(i) {
-    if (confirm('Ștergi acest task?')) {
-      tasks.splice(i, 1);
-      saveTasks();
-      renderTasks();
-      resetForm();
-    }
-  }
-
-  // Comutare între liste
-  function switchList(listName) {
-    if (listName === currentList) return;
-
-    // Butoane aria-pressed și clasa active
-    [personalListBtn, workListBtn, operationalListBtn].forEach(btn => {
-      btn.classList.remove('active');
-      btn.setAttribute('aria-pressed', 'false');
-    });
-    if(listName === 'personal') {
-      personalListBtn.classList.add('active');
-      personalListBtn.setAttribute('aria-pressed', 'true');
-    } else if(listName === 'work') {
-      workListBtn.classList.add('active');
-      workListBtn.setAttribute('aria-pressed', 'true');
-    } else if(listName === 'operational') {
-      operationalListBtn.classList.add('active');
-      operationalListBtn.setAttribute('aria-pressed', 'true');
-    }
-
-    saveTasks();
-    currentList = listName;
-    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[currentList])) || [];
-    resetForm();
-    renderTasks();
-  }
-
-  personalListBtn.addEventListener('click', () => switchList('personal'));
-  workListBtn.addEventListener('click', () => switchList('work'));
-  operationalListBtn.addEventListener('click', () => switchList('operational'));
-  sortSelect.addEventListener('change', renderTasks);
-  taskForm.addEventListener('submit', addOrUpdateTask);
-
-  // --- Tag Color Picker ---
-  let currentTagSpan = null;
-  let currentTagName = null;
-
-  function openTagColorPicker(tagSpan, tagName) {
-    currentTagSpan = tagSpan;
-    currentTagName = tagName;
-
-    // Pozitionare tagColorPicker
-    const rect = tagSpan.getBoundingClientRect();
-    tagColorPicker.style.top = (rect.bottom + window.scrollY + 5) + 'px';
-    tagColorPicker.style.left = (rect.left + window.scrollX) + 'px';
-    tagColorPicker.style.display = 'block';
-
-    // Seteaza culoarea curenta
-    colorPicker.value = tagColors[tagName] || '#6c757d';
-
-    colorPicker.focus();
-  }
-
-  colorPicker.addEventListener('input', () => {
-    if (currentTagName && currentTagSpan) {
-      tagColors[currentTagName] = colorPicker.value;
-      currentTagSpan.style.backgroundColor = colorPicker.value;
-      saveTagColors();
-    }
+    clearForm();
   });
 
-  // Închidere color picker când click în afara
-  document.addEventListener('click', (e) => {
-    if (!tagColorPicker.contains(e.target) && !e.target.classList.contains('tag-edit-btn')) {
-      tagColorPicker.style.display = 'none';
-      currentTagSpan = null;
-      currentTagName = null;
-    }
-  });
-
-  // Inițializare
-  renderTasks();
-
+  // Init
+  switchList('personal');
 </script>
 </body>
 </html>
