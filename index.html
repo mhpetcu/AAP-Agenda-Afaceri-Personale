@@ -29,7 +29,7 @@
     transition: background 0.3s, color 0.3s;
   }
   .container {
-    max-width: 700px;
+    max-width: 600px;
     margin: auto;
   }
   h1 {
@@ -53,59 +53,16 @@
     color: var(--accent);
     border: none;
     padding: 0.4rem 0.8rem;
-    font-size: 1.4rem;
-    user-select: none;
-  }
-  .switch-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .switch-container button {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 8px;
-    border: none;
-    background: var(--card);
-    color: var(--text);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background-color 0.2s, color 0.2s;
-  }
-  .switch-container button.active {
-    background: var(--accent);
-    color: var(--text);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .sort-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-    gap: 1rem;
-  }
-  .sort-container label {
-    align-self: center;
-    font-family: 'Montserrat', sans-serif;
-  }
-  .sort-container select {
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
   form {
     background: var(--card);
-    padding: 1rem 1.2rem 1.4rem;
+    padding: 1.2rem;
     border-radius: 12px;
     display: grid;
     gap: 0.8rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     position: relative;
-    margin-bottom: 1rem;
   }
   input, select, button, textarea {
     padding: 0.6rem;
@@ -122,7 +79,7 @@
     color: var(--text);
     border: none;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: bold;
     font-family: 'Montserrat', sans-serif;
   }
   body.dark input,
@@ -138,15 +95,66 @@
     align-items: center;
     flex-wrap: wrap;
   }
-  .calendar-time-container input[type="date"],
+  .calendar-time-container input[type="text"] {
+    flex: 2;
+  }
   .calendar-time-container input[type="time"] {
     flex: 1;
-    min-width: 120px;
+  }
+  .calendar {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 300px;
+    z-index: 1000;
+    display: none;
+  }
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .calendar-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 0.5rem;
+  }
+  .calendar-day, .calendar-date {
+    text-align: center;
+    padding: 0.4rem 0;
+    border-radius: 6px;
+  }
+  .calendar-date {
+    cursor: pointer;
+  }
+  .calendar-date:hover,
+  .calendar-date.selected {
+    background: var(--accent);
+    color: white;
   }
   ul {
     list-style: none;
     padding: 0;
-    margin-top: 0;
+    margin-top: 1.5rem;
   }
   .task {
     background: var(--card);
@@ -159,11 +167,10 @@
     flex-wrap: wrap;
   }
   .task-info {
-    flex: 1 1 65%;
-    min-width: 250px;
+    flex: 1 1 60%;
   }
   .task-actions {
-    flex: 1 1 30%;
+    flex: 1 1 35%;
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
@@ -179,8 +186,6 @@
     border-radius: 5px;
     color: white;
     margin-right: 0.5rem;
-    font-weight: 600;
-    user-select: none;
   }
   .urgent { background: #dc3545; }
   .normal { background: #28a745; }
@@ -188,22 +193,27 @@
   .status-out { background: #17a2b8; }
   .overdue {
     color: var(--red);
-    font-weight: 700;
+    font-weight: 600;
   }
-  .tag-badge {
-    font-weight: 700;
-    cursor: pointer;
-    user-select: none;
-  }
-  @media (max-width: 700px) {
+  @media (max-width: 500px) {
     .task {
       flex-direction: column;
     }
     .task-actions {
-      justify-content: flex-start;
+      justify-content: flex-end;
     }
     .calendar-time-container {
       flex-direction: column;
+    }
+    .calendar-time-container input[type="text"], 
+    .calendar-time-container input[type="time"] {
+      flex: unset;
+      width: 100%;
+    }
+    .toggle-dark {
+      float: none;
+      display: block;
+      margin: 0 auto 1rem auto;
     }
   }
   .floater {
@@ -218,19 +228,59 @@
     user-select: none;
     opacity: 0.7;
   }
+  .submitsave {
+    color: var(--text);
+  }
+  .switch-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  .switch-container button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .switch-container button.active {
+    background: var(--accent);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .sort-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  .sort-container select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+  }
 </style>
 </head>
 <body>
-<div class="container" role="main">
+<div class="container">
   <button class="toggle-dark" id="darkToggle" aria-label="Toggle dark mode">🌓</button>
   <h1>AAP</h1>
   <p class="submotto">Agenda Afacerilor Personale</p>
 
-  <nav class="switch-container" role="tablist" aria-label="Selectează lista afacerilor">
-    <button id="btnPersonal" class="active" role="tab" aria-selected="true" aria-controls="listPersonal" tabindex="0">Afaceri Interne</button>
-    <button id="btnExternal" role="tab" aria-selected="false" aria-controls="listExternal" tabindex="-1">Afaceri Externe</button>
-    <button id="btnOperational" role="tab" aria-selected="false" aria-controls="listOperational" tabindex="-1">Afaceri Operaționale</button>
-  </nav>
+  <div class="switch-container" role="radiogroup" aria-label="Alege lista">
+    <button id="personalListBtn" class="active" aria-pressed="true" type="button">Afaceri Interne</button>
+    <button id="workListBtn" aria-pressed="false" type="button">Afaceri Externe</button>
+    <button id="operationalListBtn" aria-pressed="false" type="button">Afaceri Operaționale</button>
+  </div>
 
   <div class="sort-container">
     <label for="sortSelect">Sortare:</label>
@@ -241,29 +291,37 @@
     </select>
   </div>
 
-  <form id="taskForm" autocomplete="off" aria-label="Formular adăugare/modificare task">
-    <input type="text" id="title" placeholder="Ce ai de făcut?" required aria-required="true" aria-label="Titlu task" />
-    <textarea id="details" rows="2" placeholder="Detalii (opțional)" aria-label="Detalii task"></textarea>
-    <select id="priority" aria-label="Selectează prioritatea">
+  <form id="taskForm" autocomplete="off">
+    <input type="text" id="title" placeholder="Ce ai de făcut?" required aria-required="true" />
+    <textarea id="details" rows="2" placeholder="Detalii (opțional)"></textarea>
+    <select id="priority">
       <option value="normal">Prioritate: Normal</option>
       <option value="urgent">Prioritate: Urgent</option>
     </select>
-    <select id="status" aria-label="Selectează statusul">
+    <select id="status">
       <option value="in">Status: În curs</option>
       <option value="out">Status: Gata</option>
     </select>
-    <div class="calendar-time-container" aria-label="Selectează deadline-ul">
-      <input type="date" id="deadline" aria-label="Data limită" />
-      <input type="time" id="deadlineTime" aria-label="Ora limită" />
+    <select id="tags" aria-label="Selectează tag-ul">
+      <option value="">Fără tag</option>
+      <option value="important" style="color:#dc3545;">Important</option>
+      <option value="work" style="color:#007bff;">Muncă</option>
+      <option value="personal" style="color:#28a745;">Personal</option>
+      <option value="urgent" style="color:#ff6600;">Urgent</option>
+    </select>
+    <div class="calendar-time-container">
+      <input type="text" id="deadline" placeholder="Deadline (dd/mm/yyyy)" readonly aria-label="Deadline" />
+      <input type="time" id="deadlineTime" aria-label="Ora deadline" />
     </div>
-    <div>
-      <label for="tagInput" style="font-weight:600; margin-right:0.5rem;">Tag:</label>
-      <input type="text" id="tagInput" placeholder="Nume tag" aria-label="Nume tag" style="width:120px;" />
-      <input type="color" id="tagColor" value="#FF0000" aria-label="Culoare tag" style="width:60px; vertical-align:middle; margin-left:0.3rem;" />
-      <button type="button" id="addTagBtn" aria-label="Adaugă tag" style="margin-left:0.5rem; padding:0.3rem 0.8rem; font-size:0.9rem;">Adaugă</button>
+    <div class="calendar" id="calendar" role="dialog" aria-modal="true" aria-label="Calendar">
+      <div class="calendar-header">
+        <button id="prevMonth" type="button" aria-label="Luna anterioară">‹</button>
+        <div class="calendar-title" id="calendarTitle">Iunie 2025</div>
+        <button id="nextMonth" type="button" aria-label="Luna următoare">›</button>
+      </div>
+      <div class="calendar-grid" id="calendarDays" role="grid"></div>
     </div>
-    <div id="tagsContainer" aria-live="polite" style="margin-top:0.4rem;"></div>
-    <button type="submit" style="margin-top:0.8rem;">Salvează task</button>
+    <button type="submit" class="submitsave">Salvează task</button>
   </form>
 
   <ul id="taskList" aria-live="polite" aria-label="Lista taskurilor"></ul>
@@ -272,20 +330,23 @@
 <div class="floater">by @mhpetcu</div>
 
 <script>
-  // UTILITARE
-  function formatDateDisplay(dateStr) {
+  // Formatează data din yyyy-mm-dd în dd/mm/yyyy
+  const formatDateDisplay = (dateStr) => {
     if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-');
     return `${day}/${month}/${year}`;
-  }
-  // Salvare / încărcare liste în localStorage, câte o listă pe categorie
-  const STORAGE_KEYS = {
-    personal: 'tasks_personal',
-    external: 'tasks_external',
-    operational: 'tasks_operational',
   };
 
-  // Mod dark toggle
+  // Parsează data din dd/mm/yyyy în yyyy-mm-dd
+  const parseDateInput = (displayStr) => {
+    if (!displayStr) return '';
+    const parts = displayStr.split('/');
+    if(parts.length !== 3) return '';
+    const [day, month, year] = parts;
+    return `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+  };
+
+  // Dark mode toggle
   const darkToggle = document.getElementById("darkToggle");
   darkToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
@@ -295,132 +356,129 @@
     document.body.classList.add("dark");
   }
 
-  // Elemente UI
-  const btnPersonal = document.getElementById('btnPersonal');
-  const btnExternal = document.getElementById('btnExternal');
-  const btnOperational = document.getElementById('btnOperational');
+  // Calendar & Date selection
+  (() => {
+    const calendar = document.getElementById('calendar');
+    const deadlineInput = document.getElementById('deadline');
+    const calendarDays = document.getElementById('calendarDays');
+    const calendarTitle = document.getElementById('calendarTitle');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+
+    const days = ['Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ', 'Du'];
+
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+    let selectedDate = null;
+
+    function buildCalendar(year, month) {
+      calendarDays.innerHTML = '';
+      calendarTitle.textContent = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'][month] + ' ' + year;
+
+      days.forEach(day => {
+        const d = document.createElement('div');
+        d.className = 'calendar-day';
+        d.textContent = day;
+        calendarDays.appendChild(d);
+      });
+
+      const firstDay = new Date(year, month, 1);
+      let startDay = firstDay.getDay() - 1;
+      if (startDay < 0) startDay = 6;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for(let i = 0; i < startDay; i++) {
+        const emptyCell = document.createElement('div');
+        calendarDays.appendChild(emptyCell);
+      }
+
+      for(let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'calendar-date';
+        dayCell.textContent = dayNum;
+        const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+
+        if (selectedDate === dateStr) {
+          dayCell.classList.add('selected');
+        }
+
+        dayCell.onclick = () => {
+          selectedDate = dateStr;
+          deadlineInput.value = formatDateDisplay(dateStr);
+          calendar.style.display = 'none';
+          buildCalendar(year, month);
+        };
+
+        calendarDays.appendChild(dayCell);
+      }
+    }
+
+    prevMonthBtn.onclick = () => {
+      if (currentMonth === 0) {
+        currentYear--;
+        currentMonth = 11;
+      } else {
+        currentMonth--;
+      }
+      buildCalendar(currentYear, currentMonth);
+    };
+
+    nextMonthBtn.onclick = () => {
+      if (currentMonth === 11) {
+        currentYear++;
+        currentMonth = 0;
+      } else {
+        currentMonth++;
+      }
+      buildCalendar(currentYear, currentMonth);
+    };
+
+    deadlineInput.addEventListener('click', () => {
+      if (calendar.style.display === 'block') {
+        calendar.style.display = 'none';
+      } else {
+        calendar.style.top = (deadlineInput.offsetTop + deadlineInput.offsetHeight + 5) + 'px';
+        calendar.style.left = deadlineInput.offsetLeft + 'px';
+        calendar.style.display = 'block';
+      }
+    });
+
+    document.addEventListener('click', e => {
+      if (!calendar.contains(e.target) && e.target !== deadlineInput) {
+        calendar.style.display = 'none';
+      }
+    });
+
+    if (deadlineInput.value) {
+      selectedDate = parseDateInput(deadlineInput.value);
+    }
+
+    buildCalendar(currentYear, currentMonth);
+  })();
+
+  // Gestionare task-uri multiple liste, sortare și render
+  const personalListBtn = document.getElementById('personalListBtn');
+  const workListBtn = document.getElementById('workListBtn');
+  const operationalListBtn = document.getElementById('operationalListBtn');
   const sortSelect = document.getElementById('sortSelect');
   const taskListElem = document.getElementById('taskList');
   const taskForm = document.getElementById('taskForm');
-  const titleInput = document.getElementById('title');
-  const detailsInput = document.getElementById('details');
-  const prioritySelect = document.getElementById('priority');
-  const statusSelect = document.getElementById('status');
-  const deadlineInput = document.getElementById('deadline');
-  const deadlineTimeInput = document.getElementById('deadlineTime');
-  const tagInput = document.getElementById('tagInput');
-  const tagColorInput = document.getElementById('tagColor');
-  const addTagBtn = document.getElementById('addTagBtn');
-  const tagsContainer = document.getElementById('tagsContainer');
+
+  const STORAGE_KEYS = {
+    personal: 'tasks_personal',
+    work: 'tasks_work',
+    operational: 'tasks_operational'
+  };
 
   let currentList = 'personal';
-  let tasks = [];
+  let tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[currentList])) || [];
   let editIndex = null;
-  let currentTags = []; // tag-urile unui task temporar
 
-  // Schimbă tab lista activă
-  function switchList(listName) {
-    currentList = listName;
-    btnPersonal.classList.toggle('active', listName === 'personal');
-    btnPersonal.setAttribute('aria-selected', listName === 'personal');
-    btnPersonal.tabIndex = listName === 'personal' ? 0 : -1;
-
-    btnExternal.classList.toggle('active', listName === 'external');
-    btnExternal.setAttribute('aria-selected', listName === 'external');
-    btnExternal.tabIndex = listName === 'external' ? 0 : -1;
-
-    btnOperational.classList.toggle('active', listName === 'operational');
-    btnOperational.setAttribute('aria-selected', listName === 'operational');
-    btnOperational.tabIndex = listName === 'operational' ? 0 : -1;
-
-    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[listName])) || [];
-    editIndex = null;
-    clearForm();
-    renderTasks();
-  }
-
-  btnPersonal.addEventListener('click', () => switchList('personal'));
-  btnExternal.addEventListener('click', () => switchList('external'));
-  btnOperational.addEventListener('click', () => switchList('operational'));
-
-  // Sortare
-  sortSelect.addEventListener('change', () => {
-    renderTasks();
-  });
-
-  // Salvare in localStorage
   function saveTasks() {
     localStorage.setItem(STORAGE_KEYS[currentList], JSON.stringify(tasks));
   }
 
-  // Adaugă un tag temporar în formular
-  addTagBtn.addEventListener('click', () => {
-    const tagName = tagInput.value.trim();
-    const tagColor = tagColorInput.value;
-    if (!tagName) {
-      alert("Numele tag-ului nu poate fi gol.");
-      return;
-    }
-    // Dacă tag există deja, nu-l adaugă
-    if (currentTags.find(t => t.name.toLowerCase() === tagName.toLowerCase())) {
-      alert("Tag-ul există deja.");
-      return;
-    }
-    currentTags.push({name: tagName, color: tagColor});
-    tagInput.value = '';
-    renderCurrentTags();
-  });
-
-  // Afișează tag-urile temporare din formular, cu opțiune ștergere și editare culoare
-  function renderCurrentTags() {
-    tagsContainer.innerHTML = '';
-    currentTags.forEach((tag, idx) => {
-      const span = document.createElement('span');
-      span.className = 'tag-badge';
-      span.style.backgroundColor = tag.color;
-      span.textContent = tag.name;
-      span.title = "Click pentru a schimba culoarea";
-      span.style.marginRight = '0.4rem';
-      span.style.padding = '0.2rem 0.5rem';
-      span.style.borderRadius = '5px';
-      span.style.userSelect = 'none';
-
-      // Clic pe tag pentru editare culoare
-      span.addEventListener('click', () => {
-        const newColor = prompt("Introdu o culoare hex pentru tag-ul '"+tag.name+"':", tag.color);
-        if(newColor && /^#([0-9A-F]{3}){1,2}$/i.test(newColor.trim())) {
-          tag.color = newColor.trim();
-          renderCurrentTags();
-        } else if(newColor !== null) {
-          alert('Codul de culoare nu este valid. Trebuie un hex precum #FF0000');
-        }
-      });
-
-      // Adăugăm buton mic de ștergere
-      const delBtn = document.createElement('button');
-      delBtn.textContent = '×';
-      delBtn.style.marginLeft = '0.3rem';
-      delBtn.style.border = 'none';
-      delBtn.style.background = 'transparent';
-      delBtn.style.color = 'white';
-      delBtn.style.fontWeight = '700';
-      delBtn.style.cursor = 'pointer';
-      delBtn.title = 'Șterge tag';
-      delBtn.style.userSelect = 'none';
-      delBtn.style.padding = '0 0.1rem';
-
-      delBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        currentTags.splice(idx, 1);
-        renderCurrentTags();
-      });
-
-      span.appendChild(delBtn);
-      tagsContainer.appendChild(span);
-    });
-  }
-
-  // Sortare funcție
   function compareTasks(a, b) {
     const criteria = sortSelect.value;
     if (criteria === 'added') {
@@ -434,95 +492,89 @@
       if (a.deadline > b.deadline) return 1;
       if (!a.deadlineTime && b.deadlineTime) return 1;
       if (a.deadlineTime && !b.deadlineTime) return -1;
-      if (!a.deadlineTime && !b.deadlineTime) return 0;
       if (a.deadlineTime < b.deadlineTime) return -1;
       if (a.deadlineTime > b.deadlineTime) return 1;
       return 0;
     }
     if (criteria === 'priority') {
       if (a.priority === b.priority) return 0;
-      if (a.priority === 'urgent') return -1;
-      if (b.priority === 'urgent') return 1;
+      return a.priority === 'urgent' ? -1 : 1;
     }
     return 0;
   }
 
-  // Render taskuri
   function renderTasks() {
     taskListElem.innerHTML = '';
-    if (tasks.length === 0) {
-      taskListElem.innerHTML = '<li>Lista este goală.</li>';
-      return;
-    }
     tasks.sort(compareTasks);
-    const nowDate = new Date();
 
-    for (let i = 0; i < tasks.length; i++) {
-      const t = tasks[i];
+    tasks.forEach((t, i) => {
       const li = document.createElement('li');
       li.className = 'task';
 
       const taskInfo = document.createElement('div');
       taskInfo.className = 'task-info';
 
-      const title = document.createElement('p');
-      title.textContent = t.title;
-      title.style.fontWeight = '600';
+      const titleP = document.createElement('p');
+      titleP.textContent = t.title;
+      titleP.style.fontWeight = '600';
 
-      const details = document.createElement('p');
-      details.textContent = t.details || '';
+      const detailsP = document.createElement('p');
+      detailsP.textContent = t.details;
 
-      // Priority badge
       const priorityBadge = document.createElement('span');
       priorityBadge.className = 'badge ' + (t.priority === 'urgent' ? 'urgent' : 'normal');
       priorityBadge.textContent = t.priority === 'urgent' ? 'Urgent' : 'Normal';
 
-      // Status badge
       const statusBadge = document.createElement('span');
       statusBadge.className = 'badge ' + (t.status === 'in' ? 'status-in' : 'status-out');
       statusBadge.textContent = t.status === 'in' ? 'În curs' : 'Gata';
 
-      // Deadline text
-      let deadlineText = '';
-      if (t.deadline) {
-        deadlineText = formatDateDisplay(t.deadline);
-        if (t.deadlineTime) deadlineText += ' ' + t.deadlineTime;
-      }
       const deadlineP = document.createElement('p');
-      deadlineP.textContent = deadlineText;
-      if (t.deadline && t.status === 'in') {
-        const dlDate = new Date(t.deadline + 'T' + (t.deadlineTime || '00:00'));
-        if (dlDate < nowDate) {
+      if(t.deadline) {
+        let deadlineStr = formatDateDisplay(t.deadline);
+        if(t.deadlineTime) deadlineStr += ' ' + t.deadlineTime;
+        deadlineP.textContent = 'Deadline: ' + deadlineStr;
+
+        // Evidențiere task-uri depășite deadline
+        const now = new Date();
+        const dlDate = new Date(t.deadline + 'T' + (t.deadlineTime || '23:59') + ':00');
+        if(t.status === 'in' && dlDate < now) {
           deadlineP.classList.add('overdue');
         }
       }
 
-      // Tags display
-      const tagsDiv = document.createElement('div');
-      if (t.tags && t.tags.length) {
-        t.tags.forEach(tag => {
-          const tagSpan = document.createElement('span');
-          tagSpan.className = 'tag-badge';
-          tagSpan.style.backgroundColor = tag.color;
-          tagSpan.textContent = tag.name;
-          tagsDiv.appendChild(tagSpan);
-        });
+      // Tag afisat cu culoare
+      const tagSpan = document.createElement('span');
+      if(t.tag) {
+        tagSpan.textContent = t.tag;
+        tagSpan.style.padding = '0.2rem 0.4rem';
+        tagSpan.style.marginLeft = '0.5rem';
+        tagSpan.style.borderRadius = '5px';
+        tagSpan.style.fontSize = '0.8rem';
+        tagSpan.style.color = '#fff';
+
+        switch(t.tag) {
+          case 'important': tagSpan.style.backgroundColor = '#dc3545'; break;
+          case 'work': tagSpan.style.backgroundColor = '#007bff'; break;
+          case 'personal': tagSpan.style.backgroundColor = '#28a745'; break;
+          case 'urgent': tagSpan.style.backgroundColor = '#ff6600'; break;
+          default: tagSpan.style.backgroundColor = '#6c757d';
+        }
       }
 
-      taskInfo.appendChild(title);
-      if(details.textContent) taskInfo.appendChild(details);
+      taskInfo.appendChild(titleP);
+      taskInfo.appendChild(detailsP);
       taskInfo.appendChild(priorityBadge);
       taskInfo.appendChild(statusBadge);
-      if(deadlineText) taskInfo.appendChild(deadlineP);
-      if(tagsDiv.childNodes.length) taskInfo.appendChild(tagsDiv);
+      taskInfo.appendChild(deadlineP);
+      if(t.tag) taskInfo.appendChild(tagSpan);
 
-      // Butoane editează/șterge
       const taskActions = document.createElement('div');
       taskActions.className = 'task-actions';
 
       const editBtn = document.createElement('button');
-      editBtn.textContent = 'Editează';
       editBtn.type = 'button';
+      editBtn.textContent = 'Editează';
       editBtn.onclick = () => {
         editIndex = i;
         fillFormWithTask(t);
@@ -530,16 +582,16 @@
       };
 
       const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Șterge';
       deleteBtn.type = 'button';
-      deleteBtn.onclick = () => {
+      deleteBtn.textContent = 'Șterge';
+      deleteBtn.addEventListener('click', () => {
         if(confirm('Ștergi acest task?')) {
-          tasks.splice(i,1);
+          tasks.splice(i, 1);
           saveTasks();
           renderTasks();
           clearForm();
         }
-      };
+      });
 
       taskActions.appendChild(editBtn);
       taskActions.appendChild(deleteBtn);
@@ -547,62 +599,73 @@
       li.appendChild(taskInfo);
       li.appendChild(taskActions);
       taskListElem.appendChild(li);
-    }
+    });
   }
 
-  // Completează formularul când editezi task
-  function fillFormWithTask(task) {
-    titleInput.value = task.title;
-    detailsInput.value = task.details || '';
-    prioritySelect.value = task.priority;
-    statusSelect.value = task.status;
-    deadlineInput.value = task.deadline || '';
-    deadlineTimeInput.value = task.deadlineTime || '';
-    currentTags = task.tags ? JSON.parse(JSON.stringify(task.tags)) : [];
-    renderCurrentTags();
+  function fillFormWithTask(t) {
+    document.getElementById('title').value = t.title || '';
+    document.getElementById('details').value = t.details || '';
+    document.getElementById('priority').value = t.priority || 'normal';
+    document.getElementById('status').value = t.status || 'in';
+    document.getElementById('deadline').value = t.deadline ? formatDateDisplay(t.deadline) : '';
+    document.getElementById('deadlineTime').value = t.deadlineTime || '';
+    document.getElementById('tags').value = t.tag || '';
   }
 
-  // Curăță formularul
   function clearForm() {
     taskForm.reset();
-    deadlineInput.value = '';
-    deadlineTimeInput.value = '';
-    currentTags = [];
-    renderCurrentTags();
     editIndex = null;
     taskForm.querySelector('button[type=submit]').textContent = 'Salvează task';
+    document.getElementById('deadline').value = '';
+    document.getElementById('deadlineTime').value = '';
   }
 
-  // Tratează submit formular
-  taskForm.addEventListener('submit', e => {
+  taskForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
     const newTask = {
-      title: titleInput.value.trim(),
-      details: detailsInput.value.trim(),
-      priority: prioritySelect.value,
-      status: statusSelect.value,
-      deadline: deadlineInput.value,
-      deadlineTime: deadlineTimeInput.value,
-      tags: JSON.parse(JSON.stringify(currentTags)),
-      _addedAt: editIndex === null ? Date.now() : tasks[editIndex]._addedAt,
+      title: document.getElementById('title').value.trim(),
+      details: document.getElementById('details').value.trim(),
+      priority: document.getElementById('priority').value,
+      status: document.getElementById('status').value,
+      deadline: parseDateInput(document.getElementById('deadline').value),
+      deadlineTime: document.getElementById('deadlineTime').value,
+      tag: document.getElementById('tags').value,
+      _addedAt: Date.now()
     };
-    if (!newTask.title) {
-      alert('Titlul este obligatoriu!');
-      return;
-    }
-    if (editIndex === null) {
-      tasks.push(newTask);
+    if (!newTask.title) return alert('Titlul este obligatoriu.');
+
+    if(editIndex !== null) {
+      tasks[editIndex] = {...tasks[editIndex], ...newTask};
     } else {
-      tasks[editIndex] = newTask;
+      tasks.push(newTask);
     }
     saveTasks();
     renderTasks();
     clearForm();
   });
 
-  // Init
-  switchList('personal');
+  personalListBtn.addEventListener('click', () => switchList('personal'));
+  workListBtn.addEventListener('click', () => switchList('work'));
+  operationalListBtn.addEventListener('click', () => switchList('operational'));
+  sortSelect.addEventListener('change', renderTasks);
+
+  function switchList(listName) {
+    if (currentList === listName) return;
+    currentList = listName;
+    personalListBtn.classList.toggle('active', currentList === 'personal');
+    personalListBtn.setAttribute('aria-pressed', currentList === 'personal');
+    workListBtn.classList.toggle('active', currentList === 'work');
+    workListBtn.setAttribute('aria-pressed', currentList === 'work');
+    operationalListBtn.classList.toggle('active', currentList === 'operational');
+    operationalListBtn.setAttribute('aria-pressed', currentList === 'operational');
+
+    tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[currentList])) || [];
+    clearForm();
+    renderTasks();
+  }
+
+  // Inițial
+  renderTasks();
 </script>
 </body>
 </html>
