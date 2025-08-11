@@ -1,836 +1,644 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AAP - V3 (one-file) — Tags & Export</title>
-
-<!-- Fonturi -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto&display=swap" rel="stylesheet" />
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AAP V3 - Agenda Afacerilor Personale</title>
 <style>
   :root {
     --bg: #f9f9f9;
-    --text: #111;
-    --card: #fff;
-    --accent: #0b84ff;
-    --muted: #6b6b6b;
+    --text: #1a1a1a;
+    --card: #ffffff;
+    --accent: #f9f9f9;
     --red: #dc3545;
-    --yellow: #ffb400;
-    --green: #28a745;
   }
   body.dark {
-    --bg: #0f1113;
-    --text: #e7e7e7;
-    --card: #131516;
-    --accent: #66aaff;
-    --muted: #9b9b9b;
+    --bg: #121212;
+    --text: #e0e0e0;
+    --card: #1e1e1e;
+    --accent: #0e0e0e;
     --red: #ff6b6b;
-    --yellow: #ffcb66;
-    --green: #48d07a;
   }
-
-  * { box-sizing: border-box; }
   body {
-    margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Arial;
-    -webkit-font-smoothing: antialiased;
-    padding: 16px;
-    transition: background 0.25s, color 0.25s;
+    font-family: 'Roboto', 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 1rem;
+    transition: background 0.3s, color 0.3s;
   }
-  .container { max-width: 980px; margin: 0 auto; }
-
-  header.top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
-  .title { font-family:'Montserrat',sans-serif; margin:0; font-size:28px; }
-  .sub { margin:0; color:var(--muted); font-size:0.95rem; }
-  .dark-toggle { background:transparent; border:none; cursor:pointer; font-size:20px; padding:6px 8px; }
-
-  .controls { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
-  .lists { display:flex; gap:8px; flex-wrap:wrap; }
-  .list-btn {
-    background:var(--card);
-    border:1px solid rgba(0,0,0,0.06);
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-family:'Montserrat',sans-serif;
-    font-weight:600;
+  .container {
+    max-width: 700px;
+    margin: auto;
   }
-  .list-btn.active { background:var(--accent); color:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
-
-  .tools { display:flex; gap:8px; align-items:center; }
-  .tools input[type="search"] { padding:8px 10px; border-radius:8px; border:1px solid #ddd; width:180px; }
-  .tools select { padding:8px; border-radius:8px; }
-
-  .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
-  .card { background:var(--card); padding:14px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.04); position:relative; }
-  form { display:flex; flex-direction:column; gap:10px; }
-
-  input[type="text"], input[type="time"], textarea, select {
-    padding:10px; border-radius:8px; border:1px solid #ddd; background:var(--card); color:var(--text);
-    font-size:1rem;
+  h1 {
+    text-align: center;
+    font-size: 3.2rem;
+    margin-bottom: 0.3rem;
+    font-family: 'Montserrat', sans-serif;
   }
-  textarea { min-height:64px; resize:vertical; }
-  .row { display:flex; gap:8px; }
-  .row > * { flex:1; }
-
-  .primary { background:var(--accent); color:#fff; border:none; padding:10px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
-  .muted { background:transparent; border:1px solid rgba(0,0,0,0.06); color:var(--muted); padding:10px 12px; border-radius:8px; cursor:pointer; }
-
-  /* Calendar */
-  .calendar { position:absolute; left:16px; top:220px; width:320px; padding:12px; border-radius:10px; box-shadow:0 14px 40px rgba(0,0,0,0.12); background:var(--card); z-index:9999; display:none; }
-  .calendar-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-  .nav { background:transparent; border:none; font-size:20px; cursor:pointer; color:var(--accent); padding:4px 6px; }
-  .calendar-title { font-weight:600; text-align:center; flex:1; }
-  .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
-  .calendar-day { font-size:0.78rem; text-align:center; color:var(--muted); }
-  .calendar-date { text-align:center; padding:8px; border-radius:8px; cursor:pointer; }
-  .calendar-date:hover { background: rgba(0,0,0,0.04); }
-  .calendar-date.selected { background:var(--accent); color:#fff; }
-
-  /* Tags UI */
-  .tag-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
-  .tag-chip { display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:999px; cursor:pointer; color:#fff; font-weight:600; }
-  .tag-chip .tag-name{ padding-right:6px; }
-  .tag-editor { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; }
-
-  /* Tag list area (filter) */
-  .tag-filter { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0 12px 0; }
-
-  /* List */
-  #taskList { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; padding-bottom:140px; }
-  .task { display:flex; justify-content:space-between; gap:12px; background:var(--card); padding:12px; border-radius:10px; box-shadow:0 8px 18px rgba(0,0,0,0.04); align-items:flex-start; }
-  .task-info { flex:1; }
-  .task-info p { margin:4px 0; }
-  .badges { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
-  .badge { padding:4px 8px; border-radius:8px; color:#fff; font-size:0.78rem; }
-  .urgent { background:var(--red); }
-  .normal { background:var(--green); }
-  .status-in { background:var(--yellow); color:#111; }
-  .status-out { background:var(--green); }
-
-  .deadline-text { margin-top:6px; font-weight:600; font-size:0.95rem; }
-  .deadline-text.overdue { color:var(--red); }
-  .deadline-text.soon { color:var(--yellow); font-weight:800; }
-
-  /* Actions */
-  .task-actions { display:flex; gap:8px; justify-content:flex-end; align-items:center; min-width:160px; }
-  .task-actions button { background:transparent; border:none; padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:600; }
-  .task-actions .del { color:var(--red); }
-
-  /* Floater */
-  .floater { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); background:transparent; padding:6px 10px; color:var(--muted); border-radius:8px; pointer-events:none; z-index:6000; }
-
-  /* Export/Import area */
-  .io-controls { display:flex; gap:8px; align-items:center; margin-left:8px; flex-wrap:wrap; }
-
-  /* Responsive */
-  @media(max-width:900px){
-    .main-grid { grid-template-columns:1fr; }
-    .calendar { position:relative; left:auto; top:auto; width:100%; margin-top:6px; display:none; }
-    .tools input[type="search"]{ width:140px; }
+  .submotto {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    font-family: 'Roboto', sans-serif;
   }
-  @media(max-width:520px){
-    .title { font-size:20px; }
-    .list-btn{ padding:8px 10px; font-size:0.95rem; }
-    .task { flex-direction:column; align-items:stretch; }
-    .task-actions { justify-content:flex-end; width:100%; margin-top:8px; }
-    .task-actions button { padding:8px 10px; }
+  .toggle-dark {
+    float: right;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    background: none;
+    color: var(--accent);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    font-size: 1.2rem;
   }
-
-  .muted-text { color:var(--muted); font-size:0.95rem; }
-  /* small color-input style minimal */
-  input[type="color"]{ width:38px; height:34px; padding:0; border:none; background:transparent; cursor:pointer; }
+  form {
+    background: var(--card);
+    padding: 1.2rem;
+    border-radius: 12px;
+    display: grid;
+    gap: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: relative;
+  }
+  input, select, button, textarea {
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+  }
+  button {
+    background: var(--accent);
+    color: var(--text);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+  }
+  body.dark input,
+  body.dark select,
+  body.dark textarea {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border: 1px solid #555;
+  }
+  .calendar-time-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .calendar-time-container input[type="text"] {
+    flex: 2;
+  }
+  .calendar-time-container input[type="time"] {
+    flex: 1;
+  }
+  .calendar {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 300px;
+    z-index: 1000;
+    display: none;
+  }
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .calendar-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 0.5rem;
+  }
+  .calendar-day, .calendar-date {
+    text-align: center;
+    padding: 0.4rem 0;
+    border-radius: 6px;
+  }
+  .calendar-date {
+    cursor: pointer;
+  }
+  .calendar-date:hover,
+  .calendar-date.selected {
+    background: var(--accent);
+    color: white;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.5rem;
+  }
+  .task {
+    background: var(--card);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .task-info {
+    flex: 1 1 60%;
+  }
+  .task-info p {
+    margin: 0.15rem 0;
+  }
+  .task-tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    font-weight: 600;
+    margin: 0.3rem 0;
+    user-select: none;
+    cursor: pointer;
+    color: white;
+  }
+  .task-actions {
+    flex: 1 1 35%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .task-actions button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .task-actions button svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--text);
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    color: white;
+    margin-right: 0.5rem;
+  }
+  .urgent { background: #dc3545; }
+  .normal { background: #28a745; }
+  .status-in { background: #ffc107; color: black; }
+  .status-out { background: #17a2b8; }
+  .overdue {
+    color: var(--red);
+    font-weight: 600;
+  }
+  @media (max-width: 600px) {
+    .task {
+      flex-direction: column;
+    }
+    .task-actions {
+      justify-content: flex-start;
+    }
+    .calendar-time-container {
+      flex-direction: column;
+    }
+    .calendar-time-container input[type="text"], 
+    .calendar-time-container input[type="time"] {
+      flex: unset;
+      width: 100%;
+    }
+    .toggle-dark {
+      float: none;
+      display: block;
+      margin: 0 auto 1rem auto;
+    }
+  }
+  .floater {
+    position: relative;
+    margin-bottom: 80px;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    user-select: none;
+    opacity: 0.7;
+  }
+  .submitsave {
+    color: var(--text);
+  }
+  .switch-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  .switch-container button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .switch-container button.active {
+    background: var(--accent);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .sort-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  .sort-container select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+  }
 </style>
+<title>AAP V3</title>
 </head>
 <body>
-  <div class="container">
-    <header class="top">
-      <div>
-        <div class="title">AAP</div>
-        <div class="sub">Agenda Afacerilor Personale — V3 (tags + export)</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="io-controls" title="Export/Import">
-          <button id="exportJsonBtn" class="muted" type="button">Export JSON</button>
-          <button id="exportCsvBtn" class="muted" type="button">Export CSV</button>
-          <label class="muted" style="padding:8px;border-radius:8px;cursor:pointer;">
-            Import JSON
-            <input id="importJsonInput" type="file" accept=".json" style="display:none" />
-          </label>
-        </div>
-        <button id="darkToggle" class="dark-toggle" aria-label="Comută modul întunecat">🌓</button>
-      </div>
-    </header>
+<div class="container">
+  <button class="toggle-dark" id="darkToggle" aria-label="Toggle dark mode">🌓</button>
+  <h1>AAP</h1>
+  <p class="submotto">Agenda Afacerilor Personale</p>
 
-    <section class="controls" aria-label="Controls">
-      <div class="lists" role="tablist" aria-label="Liste">
-        <button class="list-btn active" data-list="personal" role="tab" aria-selected="true">Afaceri Interne</button>
-        <button class="list-btn" data-list="work" role="tab" aria-selected="false">Afaceri Externe</button>
-        <button class="list-btn" data-list="ops" role="tab" aria-selected="false">Afaceri Operaționale</button>
-      </div>
-
-      <div class="tools" aria-hidden="false">
-        <input id="searchInput" type="search" placeholder="Caută..." aria-label="Caută taskuri" />
-        <select id="sortSelect" aria-label="Selectează sortarea">
-          <option value="added">Data adăugării</option>
-          <option value="deadline">Deadline</option>
-          <option value="priority">Prioritate</option>
-        </select>
-      </div>
-    </section>
-
-    <main class="main-grid">
-      <section class="card form-card" aria-labelledby="form-title">
-        <form id="taskForm" autocomplete="off">
-          <input id="title" type="text" placeholder="Ce ai de făcut?" required aria-required="true" />
-          <textarea id="details" rows="2" placeholder="Detalii (opțional)"></textarea>
-
-          <div class="row">
-            <select id="priority" aria-label="Prioritate">
-              <option value="normal">Prioritate: Normal</option>
-              <option value="urgent">Prioritate: Urgent</option>
-            </select>
-
-            <select id="status" aria-label="Status">
-              <option value="in">Status: În curs</option>
-              <option value="out">Status: Gata</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <input id="deadline" type="text" placeholder="Deadline (dd/mm/yyyy)" readonly aria-label="Deadline (alege din calendar)" />
-            <input id="deadlineTime" type="time" aria-label="Ora deadline" />
-          </div>
-
-          <!-- tag selection + create -->
-          <div class="tag-editor">
-            <div id="tagsSelectWrap" style="flex:1">
-              <div class="muted-text" style="margin-bottom:6px">Atribuie tag-uri:</div>
-              <div id="tagsCheckboxes" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-            </div>
-
-            <div style="min-width:220px;">
-              <div class="muted-text" style="margin-bottom:6px">Creează tag nou:</div>
-              <div style="display:flex;gap:8px;align-items:center">
-                <input id="newTagName" type="text" placeholder="Nume tag" />
-                <input id="newTagColor" type="color" value="#0b84ff" />
-                <button id="createTagBtn" class="muted" type="button">Adaugă tag</button>
-              </div>
-              <div id="tagsListManage" style="margin-top:8px"></div>
-            </div>
-          </div>
-
-          <!-- Calendar (persistent) -->
-          <div id="calendar" class="calendar" role="dialog" aria-label="Calendar" aria-hidden="true">
-            <div class="calendar-head">
-              <button id="prevMonth" class="nav" type="button" aria-label="Luna anterioară">‹</button>
-              <div id="calendarTitle" class="calendar-title">Luna An</div>
-              <button id="nextMonth" class="nav" type="button" aria-label="Luna următoare">›</button>
-            </div>
-            <div id="calendarGrid" class="calendar-grid" role="grid"></div>
-          </div>
-
-          <div class="row" style="align-items:center">
-            <button id="saveBtn" class="primary" type="submit">Salvează task</button>
-            <button id="clearBtn" class="muted" type="button">Golire</button>
-          </div>
-        </form>
-      </section>
-
-      <section class="card list-card" aria-labelledby="list-title">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-          <div>
-            <div class="muted-text">Filtrează după tag:</div>
-            <div id="tagFilterArea" class="tag-filter"></div>
-          </div>
-          <div class="muted-text">Listează: <span id="currentListLabel">Afaceri Interne</span></div>
-        </div>
-
-        <ul id="taskList" aria-live="polite"></ul>
-      </section>
-    </main>
-
-    <div class="floater">by @mhpetcu</div>
+  <div class="switch-container" role="radiogroup" aria-label="Alege lista">
+    <button id="personalListBtn" class="active" aria-pressed="true" type="button">Afaceri Interne</button>
+    <button id="workListBtn" aria-pressed="false" type="button">Afaceri Externe</button>
+    <button id="operationalListBtn" aria-pressed="false" type="button">Afaceri Operaționale</button>
   </div>
 
+  <div class="sort-container">
+    <label for="sortSelect">Sortare:</label>
+    <select id="sortSelect" aria-label="Selectează criteriul de sortare">
+      <option value="added">Data adăugării</option>
+      <option value="deadline">Deadline</option>
+      <option value="priority">Prioritate</option>
+    </select>
+  </div>
+
+  <form id="taskForm" autocomplete="off">
+    <input type="text" id="title" placeholder="Ce ai de făcut?" required aria-required="true" />
+    <textarea id="details" rows="2" placeholder="Detalii (opțional)"></textarea>
+    <select id="priority" aria-label="Prioritate task">
+      <option value="normal">Prioritate: Normal</option>
+      <option value="urgent">Prioritate: Urgent</option>
+    </select>
+    <select id="status" aria-label="Status task">
+      <option value="in">Status: În curs</option>
+      <option value="out">Status: Gata</option>
+    </select>
+    <div class="calendar-time-container">
+      <input type="text" id="deadline" placeholder="Deadline (dd/mm/yyyy)" readonly aria-label="Deadline" />
+      <input type="time" id="deadlineTime" aria-label="Ora deadline" />
+    </div>
+
+    <label for="tagInput" style="margin-top:10px;">Tag (apasă pe culoare pentru a schimba):</label>
+    <input type="text" id="tagInput" placeholder="Etichetă task" required style="width: 60%; display: inline-block; margin-right: 10px;" aria-label="Tag task" />
+    <input type="color" id="tagColor" value="#4a90e2" style="width: 30%; display: inline-block; vertical-align: middle;" aria-label="Culoare tag" />
+
+    <button type="submit" class="submitsave">Salvează task</button>
+  </form>
+
+  <ul id="taskList" aria-live="polite" aria-label="Lista taskurilor"></ul>
+</div>
+
+<div class="floater">by @mhpetcu</div>
+
 <script>
-/* ===========================================================
-   AAP V3 - single-file JS
-   - 3 liste separate (personal, work, ops)
-   - tags system global (create, color, assign)
-   - export JSON/CSV, import JSON
-   - sort + filter live (search + tag filter)
-   - calendar (persistent on month change)
-   - date dd/mm/yyyy
-   - overdue/due-soon/done coloring
-   =========================================================== */
+  // Formatare data yyyy-mm-dd <-> dd/mm/yyyy
+  const formatDateDisplay = (dateStr) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
 
-const STORAGE = {
-  personal: 'tasks_personal_v3',
-  work: 'tasks_work_v3',
-  ops: 'tasks_ops_v3',
-  tags: 'aap_tags_v3',
-  dark: 'aap_dark_v3'
-};
+  const parseDateInput = (displayStr) => {
+    if (!displayStr) return '';
+    const parts = displayStr.split('/');
+    if(parts.length !== 3) return '';
+    const [day, month, year] = parts;
+    return `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+  };
 
-// State
-let currentList = 'personal';
-let tasks = JSON.parse(localStorage.getItem(STORAGE[currentList])) || [];
-let tags = JSON.parse(localStorage.getItem(STORAGE.tags)) || []; // global tags
-let activeTagFilter = null; // tag id
-let editIndex = null;
-
-// DOM
-const listBtns = document.querySelectorAll('.list-btn');
-const sortSelect = document.getElementById('sortSelect');
-const searchInput = document.getElementById('searchInput');
-
-const taskList = document.getElementById('taskList');
-const taskForm = document.getElementById('taskForm');
-const saveBtn = document.getElementById('saveBtn');
-const clearBtn = document.getElementById('clearBtn');
-
-const titleEl = document.getElementById('title');
-const detailsEl = document.getElementById('details');
-const priorityEl = document.getElementById('priority');
-const statusEl = document.getElementById('status');
-const deadlineEl = document.getElementById('deadline');
-const deadlineTimeEl = document.getElementById('deadlineTime');
-
-const calendar = document.getElementById('calendar');
-const calendarGrid = document.getElementById('calendarGrid');
-const calendarTitle = document.getElementById('calendarTitle');
-const prevMonth = document.getElementById('prevMonth');
-const nextMonth = document.getElementById('nextMonth');
-
-const darkToggle = document.getElementById('darkToggle');
-
-// Tag UI DOM
-const tagsCheckboxes = document.getElementById('tagsCheckboxes');
-const createTagBtn = document.getElementById('createTagBtn');
-const newTagName = document.getElementById('newTagName');
-const newTagColor = document.getElementById('newTagColor');
-const tagsListManage = document.getElementById('tagsListManage');
-const tagFilterArea = document.getElementById('tagFilterArea');
-const currentListLabel = document.getElementById('currentListLabel');
-
-// Export/Import
-const exportJsonBtn = document.getElementById('exportJsonBtn');
-const exportCsvBtn = document.getElementById('exportCsvBtn');
-const importJsonInput = document.getElementById('importJsonInput');
-
-// Utils
-function formatDateDisplay(yyyy_mm_dd) {
-  if(!yyyy_mm_dd) return '';
-  const [y,m,d] = yyyy_mm_dd.split('-');
-  return `${d}/${m}/${y}`;
-}
-function parseDateInput(display) {
-  if(!display) return '';
-  const parts = display.split('/');
-  if(parts.length !== 3) return '';
-  const [d,m,y] = parts;
-  return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-}
-function uid(prefix='id') { return prefix + '_' + Math.random().toString(36).slice(2,9); }
-
-// Dark mode
-darkToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  localStorage.setItem(STORAGE.dark, document.body.classList.contains('dark'));
-});
-if(localStorage.getItem(STORAGE.dark) === 'true') document.body.classList.add('dark');
-
-// Save/load tasks/tags
-function saveTasks() { localStorage.setItem(STORAGE[currentList], JSON.stringify(tasks)); }
-function saveTags(){ localStorage.setItem(STORAGE.tags, JSON.stringify(tags)); }
-
-// List switching
-listBtns.forEach(b => b.addEventListener('click', () => {
-  const target = b.dataset.list;
-  if(target === currentList) return;
-  // save current list
-  saveTasks();
-  currentList = target;
-  listBtns.forEach(x => {
-    x.classList.toggle('active', x.dataset.list === currentList);
-    x.setAttribute('aria-selected', x.dataset.list === currentList ? 'true' : 'false');
+  // Toggle dark mode
+  const darkToggle = document.getElementById("darkToggle");
+  darkToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.body.classList.contains("dark"));
   });
-  tasks = JSON.parse(localStorage.getItem(STORAGE[currentList])) || [];
-  editIndex = null;
-  taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value='';
-  currentListLabel.textContent = clampListLabel(currentList);
-  activeTagFilter = null;
-  renderTagFilterArea();
-  renderTagsCheckboxes();
-  renderTagsManage();
-  renderTasks();
-}));
-
-function clampListLabel(k){
-  if(k==='personal') return 'Afaceri Interne';
-  if(k==='work') return 'Afaceri Externe';
-  return 'Afaceri Operaționale';
-}
-
-// Sorting compare
-function compareTasks(a,b) {
-  const c = sortSelect.value;
-  if(c === 'added') return (a._addedAt||0) - (b._addedAt||0);
-  if(c === 'deadline') {
-    if(!a.deadline && b.deadline) return 1;
-    if(a.deadline && !b.deadline) return -1;
-    if(!a.deadline && !b.deadline) return 0;
-    if(a.deadline < b.deadline) return -1;
-    if(a.deadline > b.deadline) return 1;
-    const ta = a.deadlineTime || '00:00', tb = b.deadlineTime || '00:00';
-    return ta < tb ? -1 : ta > tb ? 1 : 0;
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
   }
-  if(c === 'priority') {
-    if(a.priority === b.priority) return 0;
-    if(a.priority === 'urgent') return -1;
-    return 1;
-  }
-  return 0;
-}
 
-// Render tags area (checkboxes for assign)
-function renderTagsCheckboxes(){
-  tagsCheckboxes.innerHTML = '';
-  if(tags.length === 0){
-    tagsCheckboxes.innerHTML = '<div class="muted-text">Niciun tag creat.</div>';
-    return;
-  }
-  tags.forEach(t => {
-    const id = 'tagcb_' + t.id;
-    const wrap = document.createElement('label');
-    wrap.style.display='inline-flex';
-    wrap.style.alignItems='center';
-    wrap.style.gap='6px';
-    wrap.style.cursor='pointer';
-    wrap.style.marginRight='6px';
-    const input = document.createElement('input');
-    input.type='checkbox';
-    input.id = id;
-    input.dataset.tagid = t.id;
-    input.style.display = 'none'; // we'll style as chip instead of checkbox
+  // Calendar simplu
+  const deadlineInput = document.getElementById("deadline");
+  const deadlineTimeInput = document.getElementById("deadlineTime");
 
-    const chip = document.createElement('span');
-    chip.className = 'tag-chip';
-    chip.style.background = t.color || '#0b84ff';
-    chip.title = t.name;
-    chip.dataset.tagid = t.id;
-    chip.innerHTML = `<span class="tag-name">${t.name}</span>`;
-
-    // clicking chip toggles the hidden checkbox
-    chip.addEventListener('click', () => {
-      input.checked = !input.checked;
-      chip.style.opacity = input.checked ? '1' : '0.6';
-    });
-
-    // default not selected (when creating new task)
-    chip.style.opacity = '0.6';
-
-    wrap.appendChild(input);
-    wrap.appendChild(chip);
-    tagsCheckboxes.appendChild(wrap);
+  // Adăugare calendar minimalist (pop-up) la input deadline
+  deadlineInput.addEventListener("focus", () => {
+    const date = prompt("Introdu data deadline-ului (format dd/mm/yyyy):", deadlineInput.value || "");
+    if(date) {
+      // Validare scurta
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
+        deadlineInput.value = date;
+      } else {
+        alert("Formatul corect este dd/mm/yyyy.");
+      }
+    }
   });
-}
 
-// Render tag management (list with color editor)
-function renderTagsManage(){
-  tagsListManage.innerHTML = '';
-  if(tags.length === 0){
-    tagsListManage.innerHTML = '<div class="muted-text">Niciun tag de gestionat.</div>';
-    return;
+  // Taskuri și liste
+  let tasks = JSON.parse(localStorage.getItem("tasksV3")) || [];
+
+  // Liste: "personal", "work", "operational"
+  let currentList = "personal";
+
+  const taskListEl = document.getElementById("taskList");
+  const taskForm = document.getElementById("taskForm");
+  const titleInput = document.getElementById("title");
+  const detailsInput = document.getElementById("details");
+  const prioritySelect = document.getElementById("priority");
+  const statusSelect = document.getElementById("status");
+  const tagInput = document.getElementById("tagInput");
+  const tagColorInput = document.getElementById("tagColor");
+
+  // Butoane schimbare liste
+  const personalListBtn = document.getElementById("personalListBtn");
+  const workListBtn = document.getElementById("workListBtn");
+  const operationalListBtn = document.getElementById("operationalListBtn");
+
+  personalListBtn.addEventListener("click", () => switchList("personal"));
+  workListBtn.addEventListener("click", () => switchList("work"));
+  operationalListBtn.addEventListener("click", () => switchList("operational"));
+
+  // Sortare
+  const sortSelect = document.getElementById("sortSelect");
+
+  sortSelect.addEventListener("change", renderTasks);
+
+  // Schimbă lista curentă și actualizează aria-pressed
+  function switchList(listName) {
+    currentList = listName;
+    personalListBtn.classList.toggle("active", listName === "personal");
+    personalListBtn.setAttribute("aria-pressed", listName === "personal");
+    workListBtn.classList.toggle("active", listName === "work");
+    workListBtn.setAttribute("aria-pressed", listName === "work");
+    operationalListBtn.classList.toggle("active", listName === "operational");
+    operationalListBtn.setAttribute("aria-pressed", listName === "operational");
+    renderTasks();
   }
-  tags.forEach(t => {
-    const row = document.createElement('div');
-    row.style.display='flex'; row.style.alignItems='center'; row.style.gap='8px'; row.style.marginTop='6px';
-    const colorInput = document.createElement('input');
-    colorInput.type='color'; colorInput.value = t.color || '#0b84ff';
-    colorInput.addEventListener('input', () => {
-      t.color = colorInput.value;
-      saveTags(); renderTagsCheckboxes(); renderTagFilterArea(); renderTasks();
+
+  // Salvează în localStorage
+  function saveTasks() {
+    localStorage.setItem("tasksV3", JSON.stringify(tasks));
+  }
+
+  // Renderizează lista taskurilor filtrate pe lista curentă și sortate
+  function renderTasks() {
+    taskListEl.innerHTML = "";
+    // Filtrare pe lista
+    let filteredTasks = tasks.filter(t => t.list === currentList);
+
+    // Sortare după selectat
+    const sortBy = sortSelect.value;
+    if (sortBy === "deadline") {
+      filteredTasks.sort((a, b) => (a.deadline || '') > (b.deadline || '') ? 1 : -1);
+    } else if (sortBy === "priority") {
+      filteredTasks.sort((a, b) => {
+        const p = { urgent: 0, normal: 1 };
+        return p[a.priority] - p[b.priority];
+      });
+    } else {
+      // added date (implicit ordinea din array)
+    }
+
+    if(filteredTasks.length === 0){
+      taskListEl.innerHTML = "<p style='text-align:center; color:#888;'>Nicio afacere în această listă.</p>";
+      return;
+    }
+
+    filteredTasks.forEach((task, index) => {
+      const li = document.createElement("li");
+      li.className = "task";
+
+      const info = document.createElement("div");
+      info.className = "task-info";
+
+      // Titlu
+      const titluP = document.createElement("p");
+      titluP.textContent = task.title;
+      titluP.style.fontWeight = "700";
+      info.appendChild(titluP);
+
+      // Detalii
+      if(task.details){
+        const detaliiP = document.createElement("p");
+        detaliiP.textContent = task.details;
+        detaliiP.style.color = "var(--text)";
+        detaliiP.style.fontSize = "0.9rem";
+        info.appendChild(detaliiP);
+      }
+
+      // Deadline
+      if(task.deadline){
+        const dlP = document.createElement("p");
+        dlP.textContent = "Deadline: " + formatDateDisplay(task.deadline) + (task.deadlineTime ? " " + task.deadlineTime : "");
+        dlP.style.fontSize = "0.85rem";
+        dlP.style.color = task.deadline && new Date(task.deadline) < new Date() ? "var(--red)" : "";
+        info.appendChild(dlP);
+      }
+
+      // Tag - etichetă colorată, click pentru editare culoare & nume
+      const tagSpan = document.createElement("span");
+      tagSpan.className = "task-tag";
+      tagSpan.textContent = task.tag.name || "fără tag";
+      tagSpan.style.backgroundColor = task.tag.color || "#4a90e2";
+      tagSpan.title = "Click pentru a edita tag-ul";
+      tagSpan.setAttribute("tabindex", "0");
+      tagSpan.addEventListener("click", () => editTag(task, index));
+      tagSpan.addEventListener("keydown", (ev) => {
+        if(ev.key === "Enter" || ev.key === " ") {
+          ev.preventDefault();
+          editTag(task, index);
+        }
+      });
+
+      info.appendChild(tagSpan);
+
+      // Prioritate
+      const priorP = document.createElement("p");
+      priorP.textContent = "Prioritate: " + task.priority;
+      priorP.style.fontSize = "0.85rem";
+      priorP.style.marginTop = "0.3rem";
+      info.appendChild(priorP);
+
+      // Status
+      const statP = document.createElement("p");
+      statP.textContent = "Status: " + (task.status === "in" ? "În curs" : "Gata");
+      statP.style.fontSize = "0.85rem";
+      info.appendChild(statP);
+
+      li.appendChild(info);
+
+      // Butoane
+      const btns = document.createElement("div");
+      btns.className = "task-actions";
+
+      // Icone inline SVG pentru butoane
+      const editIcon = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 000-1.42l-2.34-2.34a1.003 1.003 0 00-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>`;
+      const deleteIcon = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1z"/></svg>`;
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.innerHTML = editIcon + " Editează";
+      editBtn.title = "Editează task";
+      editBtn.onclick = () => editTask(index);
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.innerHTML = deleteIcon + " Șterge";
+      delBtn.title = "Șterge task";
+      delBtn.onclick = () => {
+        if(confirm("Sigur dorești să ștergi acest task?")){
+          tasks.splice(index, 1);
+          saveTasks();
+          renderTasks();
+        }
+      };
+
+      btns.appendChild(editBtn);
+      btns.appendChild(delBtn);
+      li.appendChild(btns);
+
+      taskListEl.appendChild(li);
     });
-    const nameSpan = document.createElement('span'); nameSpan.textContent = t.name; nameSpan.style.fontWeight='600';
-    const delBtn = document.createElement('button'); delBtn.className='muted'; delBtn.type='button'; delBtn.textContent='Șterge';
-    delBtn.addEventListener('click', () => {
-      if(!confirm('Ștergi tagul "'+t.name+'"? Va fi eliminat și din task-uri.')) return;
-      // remove tag and from tasks
-      tags = tags.filter(x => x.id !== t.id);
-      tasks.forEach(task => { if(task.tags) task.tags = task.tags.filter(tid => tid !== t.id); });
-      saveTags(); saveTasks(); renderTagsManage(); renderTagsCheckboxes(); renderTasks(); renderTagFilterArea();
-    });
+  }
 
-    row.appendChild(colorInput);
-    row.appendChild(nameSpan);
-    row.appendChild(delBtn);
-    tagsListManage.appendChild(row);
-  });
-}
-
-// Render tag filter area (click a tag to filter)
-function renderTagFilterArea(){
-  tagFilterArea.innerHTML = '';
-  const allBtn = document.createElement('button');
-  allBtn.type='button'; allBtn.className='muted'; allBtn.textContent='Toate'; allBtn.style.padding='6px 10px';
-  allBtn.addEventListener('click', ()=> { activeTagFilter = null; renderTagFilterArea(); renderTasks(); });
-  tagFilterArea.appendChild(allBtn);
-
-  tags.forEach(t => {
-    const chip = document.createElement('button');
-    chip.type='button';
-    chip.style.border='none';
-    chip.style.background=t.color || '#0b84ff';
-    chip.style.color='#fff';
-    chip.style.padding='6px 10px';
-    chip.style.borderRadius='999px';
-    chip.style.cursor='pointer';
-    chip.style.fontWeight='600';
-    chip.style.marginRight='6px';
-    chip.textContent = t.name;
-    chip.dataset.tagid = t.id;
-    chip.style.opacity = (activeTagFilter === t.id) ? '1' : '0.7';
-    chip.addEventListener('click', () => {
-      activeTagFilter = (activeTagFilter === t.id) ? null : t.id;
-      renderTagFilterArea();
+  // Editare tag (nume și culoare)
+  function editTag(task, index) {
+    const newName = prompt("Editează numele tag-ului:", task.tag.name);
+    if(newName === null) return; // anulat
+    const newColor = prompt("Editează culoarea tag-ului (hex, ex: #4a90e2):", task.tag.color);
+    if(newColor === null) return;
+    // Validare simplă culoare hex
+    if(/^#[0-9A-Fa-f]{6}$/.test(newColor.trim())){
+      task.tag.name = newName.trim() || "fără tag";
+      task.tag.color = newColor.trim();
+      saveTasks();
       renderTasks();
-    });
-    tagFilterArea.appendChild(chip);
-  });
-}
-
-// Render tasks list
-function renderTasks(){
-  taskList.innerHTML = '';
-  const q = (searchInput.value || '').toLowerCase();
-  const now = new Date();
-
-  // filter & sort
-  const visible = tasks.slice().sort(compareTasks).filter(t => {
-    if(activeTagFilter && (!t.tags || t.tags.indexOf(activeTagFilter) === -1)) return false;
-    if(!q) return true;
-    return (t.title||'').toLowerCase().includes(q) || (t.details||'').toLowerCase().includes(q) ||
-      (t.tags || []).some(tid => {
-        const tg = tags.find(x => x.id === tid);
-        return tg && tg.name.toLowerCase().includes(q);
-      });
-  });
-
-  if(visible.length === 0){
-    const li = document.createElement('li');
-    li.className = 'task';
-    li.innerHTML = `<div class="task-info"><p class="muted-text">Lista este goală.</p></div>`;
-    taskList.appendChild(li);
-    return;
+    } else {
+      alert("Culoare invalidă! Folosește format hex, ex: #4a90e2");
+    }
   }
 
-  visible.forEach(task => {
-    const li = document.createElement('li'); li.className = 'task';
-    const info = document.createElement('div'); info.className='task-info';
-    const title = document.createElement('p'); title.textContent = task.title || '(fără titlu)'; title.style.fontWeight=600;
-    if(task.status === 'out'){ title.style.textDecoration='line-through'; title.style.opacity='0.7'; }
-    info.appendChild(title);
+  // Editare task (populează formularul cu datele)
+  function editTask(index) {
+    const t = tasks[index];
+    titleInput.value = t.title;
+    detailsInput.value = t.details;
+    prioritySelect.value = t.priority;
+    statusSelect.value = t.status;
+    deadlineInput.value = t.deadline ? formatDateDisplay(t.deadline) : "";
+    deadlineTimeInput.value = t.deadlineTime || "";
+    tagInput.value = t.tag.name || "";
+    tagColorInput.value = t.tag.color || "#4a90e2";
 
-    if(task.details){ const d = document.createElement('p'); d.textContent = task.details; d.className='muted-text'; info.appendChild(d); }
+    // Pasăm index-ul în form pentru salvare (modificare)
+    taskForm.dataset.editIndex = index;
 
-    // tags assigned to task
-    if(task.tags && task.tags.length){
-      const tagsWrap = document.createElement('div'); tagsWrap.className='badges';
-      task.tags.forEach(tid => {
-        const tg = tags.find(x => x.id === tid);
-        if(!tg) return;
-        const span = document.createElement('span');
-        span.className = 'badge';
-        span.style.background = tg.color || '#666';
-        span.textContent = tg.name;
-        // clicking tag filters by it
-        span.style.cursor='pointer';
-        span.addEventListener('click', () => { activeTagFilter = tg.id; renderTagFilterArea(); renderTasks(); });
-        tagsWrap.appendChild(span);
-      });
-      info.appendChild(tagsWrap);
+    // Comutăm la lista corectă
+    if(t.list) {
+      switchList(t.list);
     }
-
-    // badges (priority/status)
-    const badgesWrap = document.createElement('div'); badgesWrap.className='badges';
-    const pri = document.createElement('span'); pri.className='badge ' + (task.priority==='urgent'?'urgent':'normal'); pri.textContent = task.priority==='urgent'?'Urgent':'Normal';
-    const st = document.createElement('span'); st.className='badge ' + (task.status === 'in' ? 'status-in':'status-out'); st.textContent = task.status === 'in' ? 'În curs' : 'Gata';
-    badgesWrap.appendChild(pri); badgesWrap.appendChild(st);
-    info.appendChild(badgesWrap);
-
-    // deadline
-    if(task.deadline){
-      const dl = document.createElement('p'); dl.className='deadline-text';
-      const display = formatDateDisplay(task.deadline) + (task.deadlineTime ? ' ' + task.deadlineTime : '');
-      dl.textContent = 'Deadline: ' + display;
-      if(task.status === 'in'){
-        const dlDT = new Date(task.deadline + 'T' + (task.deadlineTime || '23:59'));
-        const diff = dlDT - now;
-        const dayMs = 24*60*60*1000;
-        if(dlDT < now) dl.classList.add('overdue');
-        else if(diff <= dayMs) { dl.classList.add('soon'); dl.style.color='var(--yellow)'; dl.style.fontWeight='800'; }
-      } else {
-        dl.style.color = 'var(--green)';
-      }
-      info.appendChild(dl);
-    }
-
-    li.appendChild(info);
-
-    // actions
-    const actions = document.createElement('div'); actions.className='task-actions';
-    const editBtn = document.createElement('button'); editBtn.type='button'; editBtn.textContent='Editează';
-    editBtn.addEventListener('click', () => {
-      const idx = tasks.indexOf(task); if(idx>=0) fillFormForEdit(idx);
-    });
-    const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.textContent='Șterge'; delBtn.className='del';
-    delBtn.addEventListener('click', () => {
-      const idx = tasks.indexOf(task); if(idx>=0 && confirm('Ștergi acest task?')) { tasks.splice(idx,1); saveTasks(); renderTasks(); }
-    });
-    actions.appendChild(editBtn); actions.appendChild(delBtn);
-    li.appendChild(actions);
-
-    taskList.appendChild(li);
-  });
-}
-
-// Fill tags management + checkboxes and filters initially
-function initTagUI(){
-  renderTagsCheckboxes();
-  renderTagsManage();
-  renderTagFilterArea();
-}
-
-// Create tag
-createTagBtn.addEventListener('click', () => {
-  const name = (newTagName.value || '').trim();
-  const color = newTagColor.value || '#0b84ff';
-  if(!name){ alert('Nume tag obligatoriu'); return; }
-  // avoid duplicate name
-  if(tags.some(t => t.name.toLowerCase() === name.toLowerCase())){ alert('Tag cu acest nume există deja'); return; }
-  const t = { id: uid('tag'), name, color };
-  tags.push(t);
-  saveTags();
-  newTagName.value = '';
-  renderTagsCheckboxes();
-  renderTagsManage();
-  renderTagFilterArea();
-});
-
-// When rendering checkboxes into form, we need to read which are checked to assign tags on save.
-// Helper: read selected tag ids from tagsCheckboxes
-function getSelectedTagIdsFromForm(){
-  const selected = [];
-  const inputs = tagsCheckboxes.querySelectorAll('input[type="checkbox"]');
-  inputs.forEach(cb => { if(cb.checked) selected.push(cb.dataset.tagid); });
-  return selected;
-}
-
-// And helper to set checkbox states given an array
-function setSelectedTagIdsInForm(arr){
-  const inputs = tagsCheckboxes.querySelectorAll('input[type="checkbox"]');
-  inputs.forEach(cb => { cb.checked = arr && arr.indexOf(cb.dataset.tagid) !== -1; cb.nextSibling.style.opacity = cb.checked ? '1' : '0.6'; });
-}
-
-// Fill form for edit
-function fillFormForEdit(i){
-  const t = tasks[i];
-  editIndex = i;
-  titleEl.value = t.title || '';
-  detailsEl.value = t.details || '';
-  priorityEl.value = t.priority || 'normal';
-  statusEl.value = t.status || 'in';
-  deadlineEl.value = t.deadline ? formatDateDisplay(t.deadline) : '';
-  deadlineTimeEl.value = t.deadlineTime || '';
-  // set tags checkboxes
-  renderTagsCheckboxes(); // re-render to ensure DOM inputs exist
-  setSelectedTagIdsInForm(t.tags || []);
-  saveBtn.textContent = 'Actualizează task';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Clear
-clearBtn.addEventListener('click', () => {
-  taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value=''; editIndex = null; saveBtn.textContent='Salvează task';
-  renderTagsCheckboxes();
-});
-
-// Submit
-taskForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const newTask = {
-    title: titleEl.value.trim(),
-    details: detailsEl.value.trim(),
-    priority: priorityEl.value,
-    status: statusEl.value,
-    deadline: parseDateInput(deadlineEl.value),
-    deadlineTime: deadlineTimeEl.value,
-    tags: getSelectedTagIdsFromForm(),
-    _addedAt: editIndex !== null ? tasks[editIndex]._addedAt : Date.now()
-  };
-  if(!newTask.title){ alert('Titlul este obligatoriu'); return; }
-  if(editIndex !== null) tasks[editIndex] = newTask;
-  else tasks.push(newTask);
-  saveTasks(); renderTasks(); taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value=''; editIndex = null; saveBtn.textContent='Salvează task';
-  renderTagsCheckboxes();
-});
-
-// Search & sort & filter handlers
-searchInput.addEventListener('input', renderTasks);
-sortSelect.addEventListener('change', renderTasks);
-
-// Initialize current list label, tags area, tasks
-currentListLabel.textContent = clampListLabel(currentList);
-initTagUI();
-tasks = JSON.parse(localStorage.getItem(STORAGE[currentList])) || [];
-renderTasks();
-
-/* ===================== Calendar logic (persistent) ===================== */
-let calYear = (new Date()).getFullYear();
-let calMonth = (new Date()).getMonth();
-let calSelected = null;
-
-function buildCalendar(y,m){
-  calendarGrid.innerHTML='';
-  calendarTitle.textContent = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'][m] + ' ' + y;
-  ['Lu','Ma','Mi','Jo','Vi','Sâ','Du'].forEach(w => { const el = document.createElement('div'); el.className='calendar-day'; el.textContent = w; calendarGrid.appendChild(el); });
-  const first = new Date(y,m,1); let start = first.getDay()-1; if(start<0) start=6;
-  const daysInMonth = new Date(y,m+1,0).getDate();
-  for(let i=0;i<start;i++){ calendarGrid.appendChild(document.createElement('div')); }
-  for(let d=1; d<=daysInMonth; d++){
-    const cell = document.createElement('div'); cell.className='calendar-date'; cell.textContent = d;
-    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    if(calSelected === dateStr) cell.classList.add('selected');
-    cell.addEventListener('click', ev => {
-      ev.stopPropagation();
-      calSelected = dateStr;
-      deadlineEl.value = formatDateDisplay(dateStr);
-      buildCalendar(y,m); // keep open
-    });
-    calendarGrid.appendChild(cell);
   }
-}
 
-prevMonth.addEventListener('click', ev => { ev.stopPropagation(); if(calMonth===0){ calYear--; calMonth=11; } else calMonth--; buildCalendar(calYear,calMonth); });
-nextMonth.addEventListener('click', ev => { ev.stopPropagation(); if(calMonth===11){ calYear++; calMonth=0; } else calMonth++; buildCalendar(calYear,calMonth); });
+  // Reset formular
+  function resetForm() {
+    taskForm.reset();
+    delete taskForm.dataset.editIndex;
+    tagColorInput.value = "#4a90e2";
+  }
 
-deadlineEl.addEventListener('click', ev => { ev.stopPropagation(); const isShown = calendar.style.display === 'block'; calendar.style.display = isShown ? 'none' : 'block'; calendar.setAttribute('aria-hidden', isShown ? 'true' : 'false'); buildCalendar(calYear,calMonth); });
+  taskForm.addEventListener("submit", e => {
+    e.preventDefault();
 
-document.addEventListener('click', ev => { if(!calendar.contains(ev.target) && ev.target !== deadlineEl){ calendar.style.display='none'; calendar.setAttribute('aria-hidden','true'); } });
-document.addEventListener('keydown', ev => { if(ev.key === 'Escape'){ calendar.style.display='none'; calendar.setAttribute('aria-hidden','true'); } });
-
-buildCalendar(calYear, calMonth);
-
-/* ============== Export / Import ============== */
-
-// Export JSON (downloads current list as JSON)
-exportJsonBtn.addEventListener('click', () => {
-  const data = { list: currentList, tasks };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `aap_${currentList}_${new Date().toISOString().slice(0,10)}.json`;
-  a.click(); URL.revokeObjectURL(url);
-});
-
-// Export CSV (current list)
-exportCsvBtn.addEventListener('click', () => {
-  if(!tasks || tasks.length === 0){ alert('Lista este goală — nimic de exportat.'); return; }
-  const header = ['title','details','priority','status','deadline','deadlineTime','tags'];
-  const rows = tasks.map(t => [
-    csvEscape(t.title||''),
-    csvEscape(t.details||''),
-    t.priority||'',
-    t.status||'',
-    t.deadline||'',
-    t.deadlineTime||'',
-    (t.tags || []).map(id => (tags.find(x => x.id === id) || {name:''}).name).join(';')
-  ]);
-  const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url;
-  a.download = `aap_${currentList}_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click(); URL.revokeObjectURL(url);
-});
-function csvEscape(s){ return `"${String(s).replace(/"/g,'""')}"`; }
-
-// Import JSON (expects exported format)
-importJsonInput.addEventListener('change', ev => {
-  const f = ev.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const obj = JSON.parse(e.target.result);
-      if(obj.tasks && Array.isArray(obj.tasks)){
-        if(!confirm('Încarci ' + obj.tasks.length + ' taskuri. Le inserezi în lista curentă?')) return;
-        // insert tasks into current list (keep tags as names — try to map existing tags by name)
-        // Build map of tag names -> id
-        const nameToId = {};
-        tags.forEach(t => nameToId[t.name.toLowerCase()] = t.id);
-        obj.tasks.forEach(t => {
-          // map tag names in imported obj (if tags were names, not ids)
-          let importedTags = [];
-          if(t.tags && t.tags.length){
-            // t.tags might be array of names or ids. We try both.
-            t.tags.forEach(tagVal => {
-              if(typeof tagVal === 'string' && nameToId[tagVal.toLowerCase()]) importedTags.push(nameToId[tagVal.toLowerCase()]);
-              else if(typeof tagVal === 'string' && tags.find(x => x.id===tagVal)) importedTags.push(tagVal);
-              else if(typeof tagVal === 'string'){
-                // create tag with random color
-                const newid = uid('tag'); const newName = String(tagVal).slice(0,40);
-                const color = randomColor();
-                tags.push({ id: newid, name: newName, color }); nameToId[newName.toLowerCase()] = newid; importedTags.push(newid);
-              }
-            });
-          }
-          const nt = {
-            title: t.title || '',
-            details: t.details || '',
-            priority: t.priority || 'normal',
-            status: t.status || 'in',
-            deadline: t.deadline || '',
-            deadlineTime: t.deadlineTime || '',
-            tags: importedTags,
-            _addedAt: Date.now()
-          };
-          tasks.push(nt);
-        });
-        saveTags(); saveTasks(); renderTagsCheckboxes(); renderTagsManage(); renderTasks(); alert('Import finalizat.');
-      } else {
-        alert('Fișier JSON invalid (aștept obiect cu proprietatea tasks).');
-      }
-    } catch(err){
-      alert('Eroare la parsare JSON: ' + err.message);
+    // Verificări simple
+    if(!titleInput.value.trim()){
+      alert("Titlul taskului este obligatoriu!");
+      return;
     }
-  };
-  reader.readAsText(f);
-  ev.target.value = '';
-});
+    if(!tagInput.value.trim()){
+      alert("Tag-ul este obligatoriu!");
+      return;
+    }
 
-// helper random color
-function randomColor(){ return '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); }
+    // Construim task-ul
+    const taskData = {
+      title: titleInput.value.trim(),
+      details: detailsInput.value.trim(),
+      priority: prioritySelect.value,
+      status: statusSelect.value,
+      deadline: deadlineInput.value ? parseDateInput(deadlineInput.value) : "",
+      deadlineTime: deadlineTimeInput.value || "",
+      tag: {
+        name: tagInput.value.trim(),
+        color: tagColorInput.value
+      },
+      list: currentList
+    };
 
-/* Save previous list tasks when switching or leaving */
-window.addEventListener('beforeunload', () => { saveTasks(); saveTags(); });
+    // Dacă edităm un task existent
+    if(taskForm.dataset.editIndex !== undefined){
+      const idx = Number(taskForm.dataset.editIndex);
+      tasks[idx] = taskData;
+    } else {
+      tasks.push(taskData);
+    }
 
-// When clicking list buttons, save current list before switching (handled above in listener)
-listBtns.forEach(btn => {
-  btn.addEventListener('click', () => { localStorage.setItem(STORAGE[currentList], JSON.stringify(tasks)); });
-});
+    saveTasks();
+    renderTasks();
+    resetForm();
+  });
 
-// Initial render
-renderTagsCheckboxes();
-renderTagsManage();
-renderTagFilterArea();
-renderTasks();
-
+  // Inițializare
+  switchList("personal");
 </script>
+
 </body>
 </html>
