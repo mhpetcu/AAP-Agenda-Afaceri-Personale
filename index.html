@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AAP - V2 (one-file)</title>
+<title>AAP - V3 (one-file) — Tags & Export</title>
 
 <!-- Fonturi -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto&display=swap" rel="stylesheet" />
@@ -40,23 +40,13 @@
     padding: 16px;
     transition: background 0.25s, color 0.25s;
   }
-
   .container { max-width: 980px; margin: 0 auto; }
 
-  /* Header */
   header.top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
   .title { font-family:'Montserrat',sans-serif; margin:0; font-size:28px; }
   .sub { margin:0; color:var(--muted); font-size:0.95rem; }
+  .dark-toggle { background:transparent; border:none; cursor:pointer; font-size:20px; padding:6px 8px; }
 
-  .dark-toggle {
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    font-size:20px;
-    padding:6px 8px;
-  }
-
-  /* Controls */
   .controls { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
   .lists { display:flex; gap:8px; flex-wrap:wrap; }
   .list-btn {
@@ -71,17 +61,11 @@
   .list-btn.active { background:var(--accent); color:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
 
   .tools { display:flex; gap:8px; align-items:center; }
-  .tools input[type="search"] {
-    padding:8px 10px;
-    border-radius:8px;
-    border:1px solid #ddd;
-    width:200px;
-  }
+  .tools input[type="search"] { padding:8px 10px; border-radius:8px; border:1px solid #ddd; width:180px; }
   .tools select { padding:8px; border-radius:8px; }
 
-  /* Layout */
   .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
-  .card { background:var(--card); padding:14px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.04); }
+  .card { background:var(--card); padding:14px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.04); position:relative; }
   form { display:flex; flex-direction:column; gap:10px; }
 
   input[type="text"], input[type="time"], textarea, select {
@@ -89,7 +73,6 @@
     font-size:1rem;
   }
   textarea { min-height:64px; resize:vertical; }
-
   .row { display:flex; gap:8px; }
   .row > * { flex:1; }
 
@@ -107,13 +90,22 @@
   .calendar-date:hover { background: rgba(0,0,0,0.04); }
   .calendar-date.selected { background:var(--accent); color:#fff; }
 
+  /* Tags UI */
+  .tag-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+  .tag-chip { display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:999px; cursor:pointer; color:#fff; font-weight:600; }
+  .tag-chip .tag-name{ padding-right:6px; }
+  .tag-editor { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; }
+
+  /* Tag list area (filter) */
+  .tag-filter { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0 12px 0; }
+
   /* List */
-  #taskList { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; padding-bottom:110px; } /* bottom padding so floater doesn't cover */
+  #taskList { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; padding-bottom:140px; }
   .task { display:flex; justify-content:space-between; gap:12px; background:var(--card); padding:12px; border-radius:10px; box-shadow:0 8px 18px rgba(0,0,0,0.04); align-items:flex-start; }
   .task-info { flex:1; }
   .task-info p { margin:4px 0; }
   .badges { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; }
-  .badge { padding:4px 8px; border-radius:8px; color:#fff; font-size:0.8rem; }
+  .badge { padding:4px 8px; border-radius:8px; color:#fff; font-size:0.78rem; }
   .urgent { background:var(--red); }
   .normal { background:var(--green); }
   .status-in { background:var(--yellow); color:#111; }
@@ -124,26 +116,17 @@
   .deadline-text.soon { color:var(--yellow); font-weight:800; }
 
   /* Actions */
-  .task-actions { display:flex; gap:8px; justify-content:flex-end; align-items:center; min-width:140px; }
+  .task-actions { display:flex; gap:8px; justify-content:flex-end; align-items:center; min-width:160px; }
   .task-actions button { background:transparent; border:none; padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:600; }
   .task-actions .del { color:var(--red); }
 
-  /* Floater centered and fixed at 50px from bottom; we also keep extra padding in task list to avoid overlap */
-  .floater {
-    position: fixed;
-    bottom: 50px;
-    left:50%;
-    transform: translateX(-50%);
-    background:transparent;
-    border-radius:8px;
-    padding:6px 10px;
-    color:var(--muted);
-    font-family:'Roboto',sans-serif;
-    z-index:6000;
-    pointer-events:none; /* non-interactive so it won't block clicks — safe for small label */
-  }
+  /* Floater */
+  .floater { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); background:transparent; padding:6px 10px; color:var(--muted); border-radius:8px; pointer-events:none; z-index:6000; }
 
-  /* Responsive adjustments */
+  /* Export/Import area */
+  .io-controls { display:flex; gap:8px; align-items:center; margin-left:8px; flex-wrap:wrap; }
+
+  /* Responsive */
   @media(max-width:900px){
     .main-grid { grid-template-columns:1fr; }
     .calendar { position:relative; left:auto; top:auto; width:100%; margin-top:6px; display:none; }
@@ -157,8 +140,9 @@
     .task-actions button { padding:8px 10px; }
   }
 
-  /* small helper */
   .muted-text { color:var(--muted); font-size:0.95rem; }
+  /* small color-input style minimal */
+  input[type="color"]{ width:38px; height:34px; padding:0; border:none; background:transparent; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -166,12 +150,22 @@
     <header class="top">
       <div>
         <div class="title">AAP</div>
-        <div class="sub">Agenda Afacerilor Personale — V2 (balanced)</div>
+        <div class="sub">Agenda Afacerilor Personale — V3 (tags + export)</div>
       </div>
-      <button id="darkToggle" class="dark-toggle" aria-label="Comută modul întunecat">🌓</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="io-controls" title="Export/Import">
+          <button id="exportJsonBtn" class="muted" type="button">Export JSON</button>
+          <button id="exportCsvBtn" class="muted" type="button">Export CSV</button>
+          <label class="muted" style="padding:8px;border-radius:8px;cursor:pointer;">
+            Import JSON
+            <input id="importJsonInput" type="file" accept=".json" style="display:none" />
+          </label>
+        </div>
+        <button id="darkToggle" class="dark-toggle" aria-label="Comută modul întunecat">🌓</button>
+      </div>
     </header>
 
-    <section class="controls">
+    <section class="controls" aria-label="Controls">
       <div class="lists" role="tablist" aria-label="Liste">
         <button class="list-btn active" data-list="personal" role="tab" aria-selected="true">Afaceri Interne</button>
         <button class="list-btn" data-list="work" role="tab" aria-selected="false">Afaceri Externe</button>
@@ -189,7 +183,6 @@
     </section>
 
     <main class="main-grid">
-      <!-- Form -->
       <section class="card form-card" aria-labelledby="form-title">
         <form id="taskForm" autocomplete="off">
           <input id="title" type="text" placeholder="Ce ai de făcut?" required aria-required="true" />
@@ -212,7 +205,25 @@
             <input id="deadlineTime" type="time" aria-label="Ora deadline" />
           </div>
 
-          <!-- Calendar chenar (persistent la schimbare lună) -->
+          <!-- tag selection + create -->
+          <div class="tag-editor">
+            <div id="tagsSelectWrap" style="flex:1">
+              <div class="muted-text" style="margin-bottom:6px">Atribuie tag-uri:</div>
+              <div id="tagsCheckboxes" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+            </div>
+
+            <div style="min-width:220px;">
+              <div class="muted-text" style="margin-bottom:6px">Creează tag nou:</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="newTagName" type="text" placeholder="Nume tag" />
+                <input id="newTagColor" type="color" value="#0b84ff" />
+                <button id="createTagBtn" class="muted" type="button">Adaugă tag</button>
+              </div>
+              <div id="tagsListManage" style="margin-top:8px"></div>
+            </div>
+          </div>
+
+          <!-- Calendar (persistent) -->
           <div id="calendar" class="calendar" role="dialog" aria-label="Calendar" aria-hidden="true">
             <div class="calendar-head">
               <button id="prevMonth" class="nav" type="button" aria-label="Luna anterioară">‹</button>
@@ -222,15 +233,22 @@
             <div id="calendarGrid" class="calendar-grid" role="grid"></div>
           </div>
 
-          <div class="row">
+          <div class="row" style="align-items:center">
             <button id="saveBtn" class="primary" type="submit">Salvează task</button>
-            <button id="clearBtn" type="button" class="muted">Golire</button>
+            <button id="clearBtn" class="muted" type="button">Golire</button>
           </div>
         </form>
       </section>
 
-      <!-- List -->
       <section class="card list-card" aria-labelledby="list-title">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+          <div>
+            <div class="muted-text">Filtrează după tag:</div>
+            <div id="tagFilterArea" class="tag-filter"></div>
+          </div>
+          <div class="muted-text">Listează: <span id="currentListLabel">Afaceri Interne</span></div>
+        </div>
+
         <ul id="taskList" aria-live="polite"></ul>
       </section>
     </main>
@@ -240,23 +258,32 @@
 
 <script>
 /* ===========================================================
-   AAP V2 - single-file JS
+   AAP V3 - single-file JS
    - 3 liste separate (personal, work, ops)
-   - sort + filter live
-   - calendar persistent on month change (doesn't auto-close on month change)
-   - date display dd/mm/yyyy
-   - overdue / due soon / done coloring
-   - floater fixed at bottom:50px with padding to avoid overlap
+   - tags system global (create, color, assign)
+   - export JSON/CSV, import JSON
+   - sort + filter live (search + tag filter)
+   - calendar (persistent on month change)
+   - date dd/mm/yyyy
+   - overdue/due-soon/done coloring
    =========================================================== */
 
-const STORAGE = { personal: 'tasks_personal_v2', work: 'tasks_work_v2', ops: 'tasks_ops_v2' };
+const STORAGE = {
+  personal: 'tasks_personal_v3',
+  work: 'tasks_work_v3',
+  ops: 'tasks_ops_v3',
+  tags: 'aap_tags_v3',
+  dark: 'aap_dark_v3'
+};
 
 // State
 let currentList = 'personal';
 let tasks = JSON.parse(localStorage.getItem(STORAGE[currentList])) || [];
+let tags = JSON.parse(localStorage.getItem(STORAGE.tags)) || []; // global tags
+let activeTagFilter = null; // tag id
 let editIndex = null;
 
-// DOM references
+// DOM
 const listBtns = document.querySelectorAll('.list-btn');
 const sortSelect = document.getElementById('sortSelect');
 const searchInput = document.getElementById('searchInput');
@@ -281,7 +308,21 @@ const nextMonth = document.getElementById('nextMonth');
 
 const darkToggle = document.getElementById('darkToggle');
 
-// Utils: date formatting/parsing
+// Tag UI DOM
+const tagsCheckboxes = document.getElementById('tagsCheckboxes');
+const createTagBtn = document.getElementById('createTagBtn');
+const newTagName = document.getElementById('newTagName');
+const newTagColor = document.getElementById('newTagColor');
+const tagsListManage = document.getElementById('tagsListManage');
+const tagFilterArea = document.getElementById('tagFilterArea');
+const currentListLabel = document.getElementById('currentListLabel');
+
+// Export/Import
+const exportJsonBtn = document.getElementById('exportJsonBtn');
+const exportCsvBtn = document.getElementById('exportCsvBtn');
+const importJsonInput = document.getElementById('importJsonInput');
+
+// Utils
 function formatDateDisplay(yyyy_mm_dd) {
   if(!yyyy_mm_dd) return '';
   const [y,m,d] = yyyy_mm_dd.split('-');
@@ -294,18 +335,25 @@ function parseDateInput(display) {
   const [d,m,y] = parts;
   return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
 }
+function uid(prefix='id') { return prefix + '_' + Math.random().toString(36).slice(2,9); }
 
-// Dark mode persistence
+// Dark mode
 darkToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark');
-  localStorage.setItem('aap_dark_v2', document.body.classList.contains('dark'));
+  localStorage.setItem(STORAGE.dark, document.body.classList.contains('dark'));
 });
-if(localStorage.getItem('aap_dark_v2') === 'true') document.body.classList.add('dark');
+if(localStorage.getItem(STORAGE.dark) === 'true') document.body.classList.add('dark');
 
-// Switch lists
+// Save/load tasks/tags
+function saveTasks() { localStorage.setItem(STORAGE[currentList], JSON.stringify(tasks)); }
+function saveTags(){ localStorage.setItem(STORAGE.tags, JSON.stringify(tags)); }
+
+// List switching
 listBtns.forEach(b => b.addEventListener('click', () => {
   const target = b.dataset.list;
   if(target === currentList) return;
+  // save current list
+  saveTasks();
   currentList = target;
   listBtns.forEach(x => {
     x.classList.toggle('active', x.dataset.list === currentList);
@@ -314,12 +362,18 @@ listBtns.forEach(b => b.addEventListener('click', () => {
   tasks = JSON.parse(localStorage.getItem(STORAGE[currentList])) || [];
   editIndex = null;
   taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value='';
+  currentListLabel.textContent = clampListLabel(currentList);
+  activeTagFilter = null;
+  renderTagFilterArea();
+  renderTagsCheckboxes();
+  renderTagsManage();
   renderTasks();
 }));
 
-// Save/load tasks
-function saveTasks() {
-  localStorage.setItem(STORAGE[currentList], JSON.stringify(tasks));
+function clampListLabel(k){
+  if(k==='personal') return 'Afaceri Interne';
+  if(k==='work') return 'Afaceri Externe';
+  return 'Afaceri Operaționale';
 }
 
 // Sorting compare
@@ -343,18 +397,131 @@ function compareTasks(a,b) {
   return 0;
 }
 
-// Render tasks (filter + sort)
-function renderTasks() {
+// Render tags area (checkboxes for assign)
+function renderTagsCheckboxes(){
+  tagsCheckboxes.innerHTML = '';
+  if(tags.length === 0){
+    tagsCheckboxes.innerHTML = '<div class="muted-text">Niciun tag creat.</div>';
+    return;
+  }
+  tags.forEach(t => {
+    const id = 'tagcb_' + t.id;
+    const wrap = document.createElement('label');
+    wrap.style.display='inline-flex';
+    wrap.style.alignItems='center';
+    wrap.style.gap='6px';
+    wrap.style.cursor='pointer';
+    wrap.style.marginRight='6px';
+    const input = document.createElement('input');
+    input.type='checkbox';
+    input.id = id;
+    input.dataset.tagid = t.id;
+    input.style.display = 'none'; // we'll style as chip instead of checkbox
+
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.style.background = t.color || '#0b84ff';
+    chip.title = t.name;
+    chip.dataset.tagid = t.id;
+    chip.innerHTML = `<span class="tag-name">${t.name}</span>`;
+
+    // clicking chip toggles the hidden checkbox
+    chip.addEventListener('click', () => {
+      input.checked = !input.checked;
+      chip.style.opacity = input.checked ? '1' : '0.6';
+    });
+
+    // default not selected (when creating new task)
+    chip.style.opacity = '0.6';
+
+    wrap.appendChild(input);
+    wrap.appendChild(chip);
+    tagsCheckboxes.appendChild(wrap);
+  });
+}
+
+// Render tag management (list with color editor)
+function renderTagsManage(){
+  tagsListManage.innerHTML = '';
+  if(tags.length === 0){
+    tagsListManage.innerHTML = '<div class="muted-text">Niciun tag de gestionat.</div>';
+    return;
+  }
+  tags.forEach(t => {
+    const row = document.createElement('div');
+    row.style.display='flex'; row.style.alignItems='center'; row.style.gap='8px'; row.style.marginTop='6px';
+    const colorInput = document.createElement('input');
+    colorInput.type='color'; colorInput.value = t.color || '#0b84ff';
+    colorInput.addEventListener('input', () => {
+      t.color = colorInput.value;
+      saveTags(); renderTagsCheckboxes(); renderTagFilterArea(); renderTasks();
+    });
+    const nameSpan = document.createElement('span'); nameSpan.textContent = t.name; nameSpan.style.fontWeight='600';
+    const delBtn = document.createElement('button'); delBtn.className='muted'; delBtn.type='button'; delBtn.textContent='Șterge';
+    delBtn.addEventListener('click', () => {
+      if(!confirm('Ștergi tagul "'+t.name+'"? Va fi eliminat și din task-uri.')) return;
+      // remove tag and from tasks
+      tags = tags.filter(x => x.id !== t.id);
+      tasks.forEach(task => { if(task.tags) task.tags = task.tags.filter(tid => tid !== t.id); });
+      saveTags(); saveTasks(); renderTagsManage(); renderTagsCheckboxes(); renderTasks(); renderTagFilterArea();
+    });
+
+    row.appendChild(colorInput);
+    row.appendChild(nameSpan);
+    row.appendChild(delBtn);
+    tagsListManage.appendChild(row);
+  });
+}
+
+// Render tag filter area (click a tag to filter)
+function renderTagFilterArea(){
+  tagFilterArea.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.type='button'; allBtn.className='muted'; allBtn.textContent='Toate'; allBtn.style.padding='6px 10px';
+  allBtn.addEventListener('click', ()=> { activeTagFilter = null; renderTagFilterArea(); renderTasks(); });
+  tagFilterArea.appendChild(allBtn);
+
+  tags.forEach(t => {
+    const chip = document.createElement('button');
+    chip.type='button';
+    chip.style.border='none';
+    chip.style.background=t.color || '#0b84ff';
+    chip.style.color='#fff';
+    chip.style.padding='6px 10px';
+    chip.style.borderRadius='999px';
+    chip.style.cursor='pointer';
+    chip.style.fontWeight='600';
+    chip.style.marginRight='6px';
+    chip.textContent = t.name;
+    chip.dataset.tagid = t.id;
+    chip.style.opacity = (activeTagFilter === t.id) ? '1' : '0.7';
+    chip.addEventListener('click', () => {
+      activeTagFilter = (activeTagFilter === t.id) ? null : t.id;
+      renderTagFilterArea();
+      renderTasks();
+    });
+    tagFilterArea.appendChild(chip);
+  });
+}
+
+// Render tasks list
+function renderTasks(){
   taskList.innerHTML = '';
   const q = (searchInput.value || '').toLowerCase();
   const now = new Date();
 
+  // filter & sort
   const visible = tasks.slice().sort(compareTasks).filter(t => {
+    if(activeTagFilter && (!t.tags || t.tags.indexOf(activeTagFilter) === -1)) return false;
     if(!q) return true;
-    return (t.title||'').toLowerCase().includes(q) || (t.details||'').toLowerCase().includes(q);
+    return (t.title||'').toLowerCase().includes(q) || (t.details||'').toLowerCase().includes(q) ||
+      (t.tags || []).some(tid => {
+        const tg = tags.find(x => x.id === tid);
+        return tg && tg.name.toLowerCase().includes(q);
+      });
   });
 
-  if(visible.length === 0) {
+  if(visible.length === 0){
     const li = document.createElement('li');
     li.className = 'task';
     li.innerHTML = `<div class="task-info"><p class="muted-text">Lista este goală.</p></div>`;
@@ -363,58 +530,50 @@ function renderTasks() {
   }
 
   visible.forEach(task => {
-    const li = document.createElement('li');
-    li.className = 'task';
-
-    const info = document.createElement('div');
-    info.className = 'task-info';
-
-    const title = document.createElement('p');
-    title.textContent = task.title || '(fără titlu)';
-    title.style.fontWeight = 600;
-    if(task.status === 'out') { title.style.textDecoration = 'line-through'; title.style.opacity = '0.7'; }
+    const li = document.createElement('li'); li.className = 'task';
+    const info = document.createElement('div'); info.className='task-info';
+    const title = document.createElement('p'); title.textContent = task.title || '(fără titlu)'; title.style.fontWeight=600;
+    if(task.status === 'out'){ title.style.textDecoration='line-through'; title.style.opacity='0.7'; }
     info.appendChild(title);
 
-    if(task.details) {
-      const d = document.createElement('p');
-      d.textContent = task.details;
-      d.className = 'muted-text';
-      info.appendChild(d);
+    if(task.details){ const d = document.createElement('p'); d.textContent = task.details; d.className='muted-text'; info.appendChild(d); }
+
+    // tags assigned to task
+    if(task.tags && task.tags.length){
+      const tagsWrap = document.createElement('div'); tagsWrap.className='badges';
+      task.tags.forEach(tid => {
+        const tg = tags.find(x => x.id === tid);
+        if(!tg) return;
+        const span = document.createElement('span');
+        span.className = 'badge';
+        span.style.background = tg.color || '#666';
+        span.textContent = tg.name;
+        // clicking tag filters by it
+        span.style.cursor='pointer';
+        span.addEventListener('click', () => { activeTagFilter = tg.id; renderTagFilterArea(); renderTasks(); });
+        tagsWrap.appendChild(span);
+      });
+      info.appendChild(tagsWrap);
     }
 
-    // badges
-    const badges = document.createElement('div');
-    badges.className = 'badges';
-    const pri = document.createElement('span');
-    pri.className = 'badge ' + (task.priority === 'urgent' ? 'urgent' : 'normal');
-    pri.textContent = task.priority === 'urgent' ? 'Urgent' : 'Normal';
-    badges.appendChild(pri);
-
-    const st = document.createElement('span');
-    st.className = 'badge ' + (task.status === 'in' ? 'status-in' : 'status-out');
-    st.textContent = task.status === 'in' ? 'În curs' : 'Gata';
-    badges.appendChild(st);
-
-    info.appendChild(badges);
+    // badges (priority/status)
+    const badgesWrap = document.createElement('div'); badgesWrap.className='badges';
+    const pri = document.createElement('span'); pri.className='badge ' + (task.priority==='urgent'?'urgent':'normal'); pri.textContent = task.priority==='urgent'?'Urgent':'Normal';
+    const st = document.createElement('span'); st.className='badge ' + (task.status === 'in' ? 'status-in':'status-out'); st.textContent = task.status === 'in' ? 'În curs' : 'Gata';
+    badgesWrap.appendChild(pri); badgesWrap.appendChild(st);
+    info.appendChild(badgesWrap);
 
     // deadline
-    if(task.deadline) {
-      const dl = document.createElement('p');
-      dl.className = 'deadline-text';
+    if(task.deadline){
+      const dl = document.createElement('p'); dl.className='deadline-text';
       const display = formatDateDisplay(task.deadline) + (task.deadlineTime ? ' ' + task.deadlineTime : '');
       dl.textContent = 'Deadline: ' + display;
-
-      if(task.status === 'in') {
+      if(task.status === 'in'){
         const dlDT = new Date(task.deadline + 'T' + (task.deadlineTime || '23:59'));
         const diff = dlDT - now;
         const dayMs = 24*60*60*1000;
-        if(dlDT < now) {
-          dl.classList.add('overdue');
-        } else if(diff <= dayMs) {
-          dl.classList.add('soon');
-          dl.style.color = 'var(--yellow)';
-          dl.style.fontWeight = '800';
-        }
+        if(dlDT < now) dl.classList.add('overdue');
+        else if(diff <= dayMs) { dl.classList.add('soon'); dl.style.color='var(--yellow)'; dl.style.fontWeight='800'; }
       } else {
         dl.style.color = 'var(--green)';
       }
@@ -424,37 +583,62 @@ function renderTasks() {
     li.appendChild(info);
 
     // actions
-    const actions = document.createElement('div');
-    actions.className = 'task-actions';
-
-    const editBtn = document.createElement('button');
-    editBtn.textContent = 'Editează';
-    editBtn.type = 'button';
+    const actions = document.createElement('div'); actions.className='task-actions';
+    const editBtn = document.createElement('button'); editBtn.type='button'; editBtn.textContent='Editează';
     editBtn.addEventListener('click', () => {
-      const idx = tasks.indexOf(task);
-      if(idx >= 0) fillFormForEdit(idx);
+      const idx = tasks.indexOf(task); if(idx>=0) fillFormForEdit(idx);
     });
-    actions.appendChild(editBtn);
-
-    const delBtn = document.createElement('button');
-    delBtn.textContent = 'Șterge';
-    delBtn.type = 'button';
-    delBtn.className = 'del';
+    const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.textContent='Șterge'; delBtn.className='del';
     delBtn.addEventListener('click', () => {
-      const idx = tasks.indexOf(task);
-      if(idx >= 0 && confirm('Ștergi acest task?')) {
-        tasks.splice(idx,1); saveTasks(); renderTasks();
-      }
+      const idx = tasks.indexOf(task); if(idx>=0 && confirm('Ștergi acest task?')) { tasks.splice(idx,1); saveTasks(); renderTasks(); }
     });
-    actions.appendChild(delBtn);
-
+    actions.appendChild(editBtn); actions.appendChild(delBtn);
     li.appendChild(actions);
+
     taskList.appendChild(li);
   });
 }
 
+// Fill tags management + checkboxes and filters initially
+function initTagUI(){
+  renderTagsCheckboxes();
+  renderTagsManage();
+  renderTagFilterArea();
+}
+
+// Create tag
+createTagBtn.addEventListener('click', () => {
+  const name = (newTagName.value || '').trim();
+  const color = newTagColor.value || '#0b84ff';
+  if(!name){ alert('Nume tag obligatoriu'); return; }
+  // avoid duplicate name
+  if(tags.some(t => t.name.toLowerCase() === name.toLowerCase())){ alert('Tag cu acest nume există deja'); return; }
+  const t = { id: uid('tag'), name, color };
+  tags.push(t);
+  saveTags();
+  newTagName.value = '';
+  renderTagsCheckboxes();
+  renderTagsManage();
+  renderTagFilterArea();
+});
+
+// When rendering checkboxes into form, we need to read which are checked to assign tags on save.
+// Helper: read selected tag ids from tagsCheckboxes
+function getSelectedTagIdsFromForm(){
+  const selected = [];
+  const inputs = tagsCheckboxes.querySelectorAll('input[type="checkbox"]');
+  inputs.forEach(cb => { if(cb.checked) selected.push(cb.dataset.tagid); });
+  return selected;
+}
+
+// And helper to set checkbox states given an array
+function setSelectedTagIdsInForm(arr){
+  const inputs = tagsCheckboxes.querySelectorAll('input[type="checkbox"]');
+  inputs.forEach(cb => { cb.checked = arr && arr.indexOf(cb.dataset.tagid) !== -1; cb.nextSibling.style.opacity = cb.checked ? '1' : '0.6'; });
+}
+
 // Fill form for edit
-function fillFormForEdit(i) {
+function fillFormForEdit(i){
   const t = tasks[i];
   editIndex = i;
   titleEl.value = t.title || '';
@@ -463,17 +647,17 @@ function fillFormForEdit(i) {
   statusEl.value = t.status || 'in';
   deadlineEl.value = t.deadline ? formatDateDisplay(t.deadline) : '';
   deadlineTimeEl.value = t.deadlineTime || '';
+  // set tags checkboxes
+  renderTagsCheckboxes(); // re-render to ensure DOM inputs exist
+  setSelectedTagIdsInForm(t.tags || []);
   saveBtn.textContent = 'Actualizează task';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Clear & set defaults
+// Clear
 clearBtn.addEventListener('click', () => {
-  taskForm.reset();
-  deadlineEl.value = '';
-  deadlineTimeEl.value = '';
-  editIndex = null;
-  saveBtn.textContent = 'Salvează task';
+  taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value=''; editIndex = null; saveBtn.textContent='Salvează task';
+  renderTagsCheckboxes();
 });
 
 // Submit
@@ -486,120 +670,167 @@ taskForm.addEventListener('submit', e => {
     status: statusEl.value,
     deadline: parseDateInput(deadlineEl.value),
     deadlineTime: deadlineTimeEl.value,
+    tags: getSelectedTagIdsFromForm(),
     _addedAt: editIndex !== null ? tasks[editIndex]._addedAt : Date.now()
   };
-  if(!newTask.title) { alert('Titlul este obligatoriu'); return; }
-
-  if(editIndex !== null) {
-    tasks[editIndex] = newTask;
-  } else {
-    tasks.push(newTask);
-  }
-  saveTasks(); renderTasks();
-  taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value=''; editIndex = null; saveBtn.textContent='Salvează task';
+  if(!newTask.title){ alert('Titlul este obligatoriu'); return; }
+  if(editIndex !== null) tasks[editIndex] = newTask;
+  else tasks.push(newTask);
+  saveTasks(); renderTasks(); taskForm.reset(); deadlineEl.value=''; deadlineTimeEl.value=''; editIndex = null; saveBtn.textContent='Salvează task';
+  renderTagsCheckboxes();
 });
 
-// Search & sort handlers
+// Search & sort & filter handlers
 searchInput.addEventListener('input', renderTasks);
 sortSelect.addEventListener('change', renderTasks);
 
-// Initialize tasks for current list
+// Initialize current list label, tags area, tasks
+currentListLabel.textContent = clampListLabel(currentList);
+initTagUI();
 tasks = JSON.parse(localStorage.getItem(STORAGE[currentList])) || [];
 renderTasks();
 
-/* =======================
-   Calendar logic (persistent)
-   ======================= */
+/* ===================== Calendar logic (persistent) ===================== */
 let calYear = (new Date()).getFullYear();
 let calMonth = (new Date()).getMonth();
 let calSelected = null;
 
-function buildCalendar(y,m) {
-  calendarGrid.innerHTML = '';
+function buildCalendar(y,m){
+  calendarGrid.innerHTML='';
   calendarTitle.textContent = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'][m] + ' ' + y;
-
-  // weekday headers
-  ['Lu','Ma','Mi','Jo','Vi','Sâ','Du'].forEach(w => {
-    const el = document.createElement('div'); el.className='calendar-day'; el.textContent = w; calendarGrid.appendChild(el);
-  });
-
-  const first = new Date(y,m,1);
-  let start = first.getDay() - 1; if(start < 0) start = 6;
+  ['Lu','Ma','Mi','Jo','Vi','Sâ','Du'].forEach(w => { const el = document.createElement('div'); el.className='calendar-day'; el.textContent = w; calendarGrid.appendChild(el); });
+  const first = new Date(y,m,1); let start = first.getDay()-1; if(start<0) start=6;
   const daysInMonth = new Date(y,m+1,0).getDate();
-
-  for(let i=0;i<start;i++){ const e = document.createElement('div'); calendarGrid.appendChild(e); }
-
+  for(let i=0;i<start;i++){ calendarGrid.appendChild(document.createElement('div')); }
   for(let d=1; d<=daysInMonth; d++){
     const cell = document.createElement('div'); cell.className='calendar-date'; cell.textContent = d;
     const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     if(calSelected === dateStr) cell.classList.add('selected');
-
-    // click selects date but DOES NOT auto-close (user can still pick time)
     cell.addEventListener('click', ev => {
       ev.stopPropagation();
       calSelected = dateStr;
       deadlineEl.value = formatDateDisplay(dateStr);
-      // keep calendar open so user can pick time or change month
-      buildCalendar(y,m);
+      buildCalendar(y,m); // keep open
     });
-
     calendarGrid.appendChild(cell);
   }
 }
 
-// navigation
-prevMonth.addEventListener('click', ev => {
-  ev.stopPropagation();
-  if(calMonth === 0){ calYear--; calMonth = 11; } else calMonth--;
-  buildCalendar(calYear, calMonth);
-});
-nextMonth.addEventListener('click', ev => {
-  ev.stopPropagation();
-  if(calMonth === 11){ calYear++; calMonth = 0; } else calMonth++;
-  buildCalendar(calYear, calMonth);
-});
+prevMonth.addEventListener('click', ev => { ev.stopPropagation(); if(calMonth===0){ calYear--; calMonth=11; } else calMonth--; buildCalendar(calYear,calMonth); });
+nextMonth.addEventListener('click', ev => { ev.stopPropagation(); if(calMonth===11){ calYear++; calMonth=0; } else calMonth++; buildCalendar(calYear,calMonth); });
 
-// toggle calendar on deadline click
-deadlineEl.addEventListener('click', ev => {
-  ev.stopPropagation();
-  const isShown = calendar.style.display === 'block';
-  calendar.style.display = isShown ? 'none' : 'block';
-  calendar.setAttribute('aria-hidden', isShown ? 'true' : 'false');
-  buildCalendar(calYear, calMonth);
-  // position: on wide screens calendar is absolutely positioned; on narrow it becomes relative due to CSS
-});
+deadlineEl.addEventListener('click', ev => { ev.stopPropagation(); const isShown = calendar.style.display === 'block'; calendar.style.display = isShown ? 'none' : 'block'; calendar.setAttribute('aria-hidden', isShown ? 'true' : 'false'); buildCalendar(calYear,calMonth); });
 
-// document click closes calendar (unless click inside calendar or on deadline)
-document.addEventListener('click', ev => {
-  if(!calendar.contains(ev.target) && ev.target !== deadlineEl) {
-    calendar.style.display = 'none';
-    calendar.setAttribute('aria-hidden','true');
-  }
-});
+document.addEventListener('click', ev => { if(!calendar.contains(ev.target) && ev.target !== deadlineEl){ calendar.style.display='none'; calendar.setAttribute('aria-hidden','true'); } });
+document.addEventListener('keydown', ev => { if(ev.key === 'Escape'){ calendar.style.display='none'; calendar.setAttribute('aria-hidden','true'); } });
 
-// ESC closes calendar
-document.addEventListener('keydown', ev => {
-  if(ev.key === 'Escape') {
-    calendar.style.display = 'none';
-    calendar.setAttribute('aria-hidden','true');
-  }
-});
-
-// initial calendar build
 buildCalendar(calYear, calMonth);
 
-/* Ensure when switching lists we save previous list tasks */
-window.addEventListener('beforeunload', () => {
-  saveTasks();
+/* ============== Export / Import ============== */
+
+// Export JSON (downloads current list as JSON)
+exportJsonBtn.addEventListener('click', () => {
+  const data = { list: currentList, tasks };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `aap_${currentList}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
 });
 
-// If user switches list, save previous list automatically by listening to list button clicks
-listBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // save the previous list's tasks to storage before switching
-    localStorage.setItem(STORAGE[currentList], JSON.stringify(tasks));
-  });
+// Export CSV (current list)
+exportCsvBtn.addEventListener('click', () => {
+  if(!tasks || tasks.length === 0){ alert('Lista este goală — nimic de exportat.'); return; }
+  const header = ['title','details','priority','status','deadline','deadlineTime','tags'];
+  const rows = tasks.map(t => [
+    csvEscape(t.title||''),
+    csvEscape(t.details||''),
+    t.priority||'',
+    t.status||'',
+    t.deadline||'',
+    t.deadlineTime||'',
+    (t.tags || []).map(id => (tags.find(x => x.id === id) || {name:''}).name).join(';')
+  ]);
+  const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `aap_${currentList}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
 });
+function csvEscape(s){ return `"${String(s).replace(/"/g,'""')}"`; }
+
+// Import JSON (expects exported format)
+importJsonInput.addEventListener('change', ev => {
+  const f = ev.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const obj = JSON.parse(e.target.result);
+      if(obj.tasks && Array.isArray(obj.tasks)){
+        if(!confirm('Încarci ' + obj.tasks.length + ' taskuri. Le inserezi în lista curentă?')) return;
+        // insert tasks into current list (keep tags as names — try to map existing tags by name)
+        // Build map of tag names -> id
+        const nameToId = {};
+        tags.forEach(t => nameToId[t.name.toLowerCase()] = t.id);
+        obj.tasks.forEach(t => {
+          // map tag names in imported obj (if tags were names, not ids)
+          let importedTags = [];
+          if(t.tags && t.tags.length){
+            // t.tags might be array of names or ids. We try both.
+            t.tags.forEach(tagVal => {
+              if(typeof tagVal === 'string' && nameToId[tagVal.toLowerCase()]) importedTags.push(nameToId[tagVal.toLowerCase()]);
+              else if(typeof tagVal === 'string' && tags.find(x => x.id===tagVal)) importedTags.push(tagVal);
+              else if(typeof tagVal === 'string'){
+                // create tag with random color
+                const newid = uid('tag'); const newName = String(tagVal).slice(0,40);
+                const color = randomColor();
+                tags.push({ id: newid, name: newName, color }); nameToId[newName.toLowerCase()] = newid; importedTags.push(newid);
+              }
+            });
+          }
+          const nt = {
+            title: t.title || '',
+            details: t.details || '',
+            priority: t.priority || 'normal',
+            status: t.status || 'in',
+            deadline: t.deadline || '',
+            deadlineTime: t.deadlineTime || '',
+            tags: importedTags,
+            _addedAt: Date.now()
+          };
+          tasks.push(nt);
+        });
+        saveTags(); saveTasks(); renderTagsCheckboxes(); renderTagsManage(); renderTasks(); alert('Import finalizat.');
+      } else {
+        alert('Fișier JSON invalid (aștept obiect cu proprietatea tasks).');
+      }
+    } catch(err){
+      alert('Eroare la parsare JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(f);
+  ev.target.value = '';
+});
+
+// helper random color
+function randomColor(){ return '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); }
+
+/* Save previous list tasks when switching or leaving */
+window.addEventListener('beforeunload', () => { saveTasks(); saveTags(); });
+
+// When clicking list buttons, save current list before switching (handled above in listener)
+listBtns.forEach(btn => {
+  btn.addEventListener('click', () => { localStorage.setItem(STORAGE[currentList], JSON.stringify(tasks)); });
+});
+
+// Initial render
+renderTagsCheckboxes();
+renderTagsManage();
+renderTagFilterArea();
+renderTasks();
+
 </script>
 </body>
 </html>
