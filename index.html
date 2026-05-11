@@ -532,6 +532,7 @@
 
   .urgent { background: rgba(214,61,61,0.14); color: var(--danger); }
   .normal { background: rgba(47,157,103,0.14); color: var(--success); }
+  .status-notstarted { background: rgba(120,120,120,0.14); color: var(--muted); }
   .status-in { background: rgba(230,168,23,0.16); color: var(--warning); }
   .status-out { background: rgba(47,157,103,0.14); color: var(--success); }
   .deadline-pill { background: rgba(44,133,200,0.13); color: var(--info); }
@@ -633,13 +634,13 @@
       <div class="brand-lockup">
         <div class="logo-mark" aria-hidden="true">AAP</div>
         <div>
-          <p class="eyebrow">Agenda Afacerilor Personale</p>
+          <p class="eyebrow">Agenda ta personală</p>
           <h1>AAP</h1>
         </div>
       </div>
       <button class="toggle-dark" id="darkToggle" aria-label="Comută dark mode">🌓</button>
     </div>
-    <p class="submotto">Agenda Afacerilor Personale.<br>Un loc simplu pentru lucrurile care trebuie urmărite, rezolvate și bifate.</p>
+    <p class="submotto">Agenda Afacerilor Personale — un loc simplu pentru lucrurile care trebuie urmărite, rezolvate și bifate.</p>
 
     <div class="dashboard" aria-label="Rezumat taskuri">
       <div class="stat-card">
@@ -680,18 +681,13 @@
             <option value="urgent">Prioritate: Urgent</option>
           </select>
           <select id="status" aria-label="Status">
+            <option value="notstarted">Status: Neînceput</option>
             <option value="in">Status: În curs</option>
             <option value="out">Status: Gata</option>
           </select>
         </div>
 
-        <select id="tags" aria-label="Selectează tag-ul">
-          <option value="">Fără tag</option>
-          <option value="important">Important</option>
-          <option value="work">Muncă</option>
-          <option value="personal">Personal</option>
-          <option value="urgent">Urgent</option>
-        </select>
+        <input type="text" id="tags" placeholder="Ex: urgent client redesign" aria-label="Taguri personalizate" />
 
         <div class="calendar-time-container">
           <input type="text" id="deadline" placeholder="Deadline (dd/mm/yyyy)" readonly aria-label="Deadline" />
@@ -892,12 +888,15 @@
     operational: 'Afaceri Operaționale'
   };
 
-  const TAG_LABELS = {
-    important: 'Important',
-    work: 'Muncă',
-    personal: 'Personal',
-    urgent: 'Urgent'
-  };
+  function formatTags(tagString) {
+    if (!tagString) return [];
+
+    return tagString
+      .split(/\s+/)
+      .map(tag => tag.trim())
+      .filter(Boolean)
+      .map(tag => tag.startsWith('#') ? tag : '#' + tag);
+  }
 
   let currentList = 'personal';
   let tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS[currentList])) || [];
@@ -964,12 +963,12 @@
       titleP.textContent = t.title;
       titleRow.appendChild(titleP);
 
-      if (t.tag) {
+      formatTags(t.tag).forEach(tag => {
         const tagSpan = document.createElement('span');
         tagSpan.className = 'tag-badge';
-        tagSpan.textContent = TAG_LABELS[t.tag] || t.tag;
+        tagSpan.textContent = tag;
         titleRow.appendChild(tagSpan);
-      }
+      });
 
       const detailsP = document.createElement('p');
       detailsP.className = 'task-details';
@@ -983,8 +982,16 @@
       priorityBadge.textContent = t.priority === 'urgent' ? 'Urgent' : 'Normal';
 
       const statusBadge = document.createElement('span');
-      statusBadge.className = 'badge ' + (t.status === 'in' ? 'status-in' : 'status-out');
-      statusBadge.textContent = t.status === 'in' ? 'În curs' : 'Gata';
+      if (t.status === 'notstarted') {
+        statusBadge.className = 'badge status-notstarted';
+        statusBadge.textContent = 'Neînceput';
+      } else if (t.status === 'in') {
+        statusBadge.className = 'badge status-in';
+        statusBadge.textContent = 'În curs';
+      } else {
+        statusBadge.className = 'badge status-out';
+        statusBadge.textContent = 'Gata';
+      }
 
       metaRow.appendChild(priorityBadge);
       metaRow.appendChild(statusBadge);
@@ -1040,7 +1047,7 @@
     document.getElementById('title').value = t.title || '';
     document.getElementById('details').value = t.details || '';
     document.getElementById('priority').value = t.priority || 'normal';
-    document.getElementById('status').value = t.status || 'in';
+    document.getElementById('status').value = t.status || 'notstarted';
     document.getElementById('deadline').value = t.deadline ? formatDateDisplay(t.deadline) : '';
     document.getElementById('deadlineTime').value = t.deadlineTime || '';
     document.getElementById('tags').value = t.tag || '';
