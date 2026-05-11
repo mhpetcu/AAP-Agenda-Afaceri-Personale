@@ -4,340 +4,750 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AAP - Agenda Afacerilor Personale</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #f9f9f9;
-    --text: #1a1a1a;
-    --card: #ffffff;
-    --accent: #f9f9f9;
-    --red: #dc3545;
+    --bg: #f4f2ee;
+    --bg-2: #ebe7df;
+    --text: #171717;
+    --muted: #6d6a63;
+    --card: rgba(255,255,255,0.82);
+    --card-solid: #ffffff;
+    --line: rgba(20,20,20,0.10);
+    --accent: #111111;
+    --accent-2: #d8b46a;
+    --accent-soft: rgba(216,180,106,0.18);
+    --danger: #d63d3d;
+    --success: #2f9d67;
+    --warning: #e6a817;
+    --info: #2c85c8;
+    --shadow: 0 18px 50px rgba(0,0,0,0.10);
+    --shadow-soft: 0 10px 28px rgba(0,0,0,0.08);
+    --radius: 24px;
   }
+
   body.dark {
-    --bg: #121212;
-    --text: #e0e0e0;
-    --card: #1e1e1e;
-    --accent: #0e0e0e;
-    --red: #ff6b6b;
+    --bg: #101010;
+    --bg-2: #171717;
+    --text: #f3f0e8;
+    --muted: #aaa59a;
+    --card: rgba(31,31,31,0.78);
+    --card-solid: #202020;
+    --line: rgba(255,255,255,0.10);
+    --accent: #f3f0e8;
+    --accent-2: #d8b46a;
+    --accent-soft: rgba(216,180,106,0.16);
+    --danger: #ff6b6b;
+    --success: #4ed28a;
+    --warning: #ffd166;
+    --info: #61b7ff;
+    --shadow: 0 18px 50px rgba(0,0,0,0.35);
+    --shadow-soft: 0 10px 28px rgba(0,0,0,0.28);
   }
+
+  * { box-sizing: border-box; }
+
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Roboto', 'Montserrat', sans-serif;
+    min-height: 100vh;
     margin: 0;
-    padding: 1rem;
-    transition: background 0.3s, color 0.3s;
-  }
-  .container {
-    max-width: 600px;
-    margin: auto;
-  }
-  h1 {
-    text-align: center;
-    font-size: 3.2rem;
-    margin-bottom: 0.3rem;
-    font-family: 'Montserrat', sans-serif;
-  }
-  .submotto {
-    text-align: center;
-    font-size: 1.1rem;
+    padding: 28px 18px;
+    background:
+      radial-gradient(circle at top left, var(--accent-soft), transparent 34%),
+      linear-gradient(135deg, var(--bg), var(--bg-2));
     color: var(--text);
-    margin-bottom: 1rem;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    transition: background 0.25s ease, color 0.25s ease;
   }
-  .toggle-dark {
-    float: right;
-    margin-bottom: 1rem;
-    cursor: pointer;
-    background: none;
-    color: var(--accent);
-    border: none;
-    padding: 0.4rem 0.8rem;
-    font-size: 1.2rem;
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
   }
-  form {
-    background: var(--card);
-    padding: 1.2rem;
-    border-radius: 12px;
-    display: grid;
-    gap: 0.8rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    position: relative;
-  }
-  input, select, button, textarea {
-    padding: 0.6rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: var(--card);
-    color: var(--text);
-    transition: all 0.2s;
-    font-family: 'Roboto', sans-serif;
-  }
+
   button {
-    background: var(--accent);
-    color: var(--text);
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-family: 'Montserrat', sans-serif;
+    -webkit-tap-highlight-color: transparent;
   }
+
+  .app-shell {
+    width: min(1080px, 100%);
+    margin: 0 auto;
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 34px;
+    padding: 28px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(18px);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    right: -120px;
+    top: -140px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(216,180,106,0.42), transparent 68%);
+    pointer-events: none;
+  }
+
+  .topbar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-mark {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 800;
+    letter-spacing: -0.08em;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .eyebrow {
+    margin: 0 0 4px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.45rem, 7vw, 5.5rem);
+    line-height: 0.86;
+    letter-spacing: -0.08em;
+    font-weight: 800;
+  }
+
+  .submotto {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 16px 0 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.55;
+  }
+
+  .toggle-dark {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card-solid);
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  .toggle-dark:hover,
+  .control-button:hover,
+  .submit-save:hover,
+  .task-actions button:hover {
+    transform: translateY(-1px);
+  }
+
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .stat-card {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.45);
+  }
+
+  body.dark .stat-card {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .stat-label {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+  }
+
+  .stat-value {
+    margin: 0;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) 1fr;
+    gap: 18px;
+    margin-top: 18px;
+    align-items: start;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(18px);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px 20px 0;
+  }
+
+  .panel-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .panel-note {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .switch-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+    margin: 16px 20px 0;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(0,0,0,0.035);
+  }
+
+  body.dark .switch-container {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .switch-container button {
+    min-height: 42px;
+    padding: 10px 8px;
+    border: 0;
+    border-radius: 13px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.86rem;
+    font-weight: 800;
+    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .switch-container button.active {
+    background: var(--card-solid);
+    color: var(--text);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+
+  .sort-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px 20px;
+  }
+
+  .sort-container label {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  form {
+    position: relative;
+    display: grid;
+    gap: 11px;
+    padding: 20px;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 13px 14px;
+    background: rgba(255,255,255,0.60);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
   body.dark input,
   body.dark select,
   body.dark textarea {
-    background: #2a2a2a;
-    color: #e0e0e0;
-    border: 1px solid #555;
+    background: rgba(255,255,255,0.06);
   }
+
+  textarea {
+    resize: vertical;
+    min-height: 86px;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+  }
+
   .calendar-time-container {
-    display: flex;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr 130px;
+    gap: 11px;
     align-items: center;
-    flex-wrap: wrap;
   }
-  .calendar-time-container input[type="text"] {
-    flex: 2;
+
+  .submit-save,
+  .control-button,
+  .task-actions button {
+    border: 0;
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: 800;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
   }
-  .calendar-time-container input[type="time"] {
-    flex: 1;
+
+  .submit-save {
+    min-height: 48px;
+    padding: 13px 18px;
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: var(--shadow-soft);
   }
+
+  .control-button {
+    padding: 10px 14px;
+    background: var(--card-solid);
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+
   .calendar {
     position: absolute;
-    background: var(--card);
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    width: 300px;
-    z-index: 1000;
+    left: 20px;
+    right: 20px;
+    top: auto;
     display: none;
+    z-index: 1000;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--card-solid);
+    box-shadow: var(--shadow);
   }
+
   .calendar-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    gap: 8px;
+    margin-bottom: 10px;
   }
+
   .calendar-header button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--accent);
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: transparent;
+    color: var(--text);
     cursor: pointer;
+    font-size: 1.45rem;
   }
+
   .calendar-title {
     flex: 1;
     text-align: center;
-    font-size: 1.1rem;
-    font-weight: 500;
-    font-family: 'Montserrat', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 800;
   }
+
   .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-top: 0.5rem;
+    gap: 5px;
   }
-  .calendar-day, .calendar-date {
+
+  .calendar-day,
+  .calendar-date {
     text-align: center;
-    padding: 0.4rem 0;
-    border-radius: 6px;
+    padding: 8px 0;
+    border-radius: 11px;
+    font-size: 0.86rem;
   }
+
+  .calendar-day {
+    color: var(--muted);
+    font-weight: 800;
+  }
+
   .calendar-date {
     cursor: pointer;
+    border: 1px solid transparent;
   }
+
   .calendar-date:hover,
   .calendar-date.selected {
     background: var(--accent);
-    color: white;
+    color: var(--bg);
   }
+
+  .empty-state {
+    display: grid;
+    place-items: center;
+    min-height: 260px;
+    margin: 0;
+    padding: 24px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .empty-state strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text);
+    font-size: 1.05rem;
+  }
+
   ul {
     list-style: none;
-    padding: 0;
-    margin-top: 1.5rem;
+    padding: 0 20px 20px;
+    margin: 0;
   }
+
   .task {
-    background: var(--card);
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(255,255,255,0.52);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  body.dark .task {
+    background: rgba(255,255,255,0.045);
+  }
+
+  .task:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .task-title-row {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
   }
-  .task-info {
-    flex: 1 1 60%;
+
+  .task-title {
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
-  .task-actions {
-    flex: 1 1 35%;
+
+  .task-details {
+    margin: 0 0 12px;
+    color: var(--muted);
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+
+  .meta-row {
     display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
   }
-  .task p {
-    margin: 0.2rem 0;
+
+  .badge,
+  .tag-badge,
+  .deadline-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 26px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    line-height: 1;
   }
-  .badge {
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.8rem;
-    border-radius: 5px;
-    color: white;
-    margin-right: 0.5rem;
+
+  .urgent { background: rgba(214,61,61,0.14); color: var(--danger); }
+  .normal { background: rgba(47,157,103,0.14); color: var(--success); }
+  .status-in { background: rgba(230,168,23,0.16); color: var(--warning); }
+  .status-out { background: rgba(47,157,103,0.14); color: var(--success); }
+  .deadline-pill { background: rgba(44,133,200,0.13); color: var(--info); }
+  .overdue { background: rgba(214,61,61,0.14); color: var(--danger); }
+
+  .tag-badge {
+    background: var(--accent-soft);
+    color: var(--accent);
   }
-  .urgent { background: #dc3545; }
-  .normal { background: #28a745; }
-  .status-in { background: #ffc107; color: black; }
-  .status-out { background: #17a2b8; }
-  .overdue {
-    color: var(--red);
-    font-weight: 600;
+
+  .task-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
   }
-  @media (max-width: 500px) {
-    .task {
-      flex-direction: column;
+
+  .task-actions button {
+    min-width: 96px;
+    padding: 10px 12px;
+    background: var(--card-solid);
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+
+  .task-actions .delete-btn {
+    color: var(--danger);
+  }
+
+  .floater {
+    margin: 22px auto 0;
+    color: var(--muted);
+    text-align: center;
+    font-size: 0.85rem;
+    user-select: none;
+  }
+
+  @media (max-width: 880px) {
+    .workspace {
+      grid-template-columns: 1fr;
     }
+
+    .dashboard {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    body {
+      padding: 14px;
+    }
+
+    .hero {
+      padding: 20px;
+      border-radius: 26px;
+    }
+
+    .topbar {
+      align-items: flex-start;
+    }
+
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+    }
+
+    .dashboard,
+    .form-grid,
+    .calendar-time-container,
+    .switch-container {
+      grid-template-columns: 1fr;
+    }
+
+    .switch-container button {
+      min-height: 40px;
+    }
+
+    .sort-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .task {
+      grid-template-columns: 1fr;
+    }
+
     .task-actions {
+      flex-direction: row;
       justify-content: flex-end;
     }
-    .calendar-time-container {
-      flex-direction: column;
-    }
-    .calendar-time-container input[type="text"], 
-    .calendar-time-container input[type="time"] {
-      flex: unset;
-      width: 100%;
-    }
-    .toggle-dark {
-      float: none;
-      display: block;
-      margin: 0 auto 1rem auto;
-    }
-  }
-  .floater {
-    position: relative;
-    margin-bottom: 80px;
-    text-align: center;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.85rem;
-    font-family: 'Roboto', sans-serif;
-    color: var(--text);
-    user-select: none;
-    opacity: 0.7;
-  }
-  .submitsave {
-    color: var(--text);
-  }
-  .switch-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-    gap: 1rem;
-  }
-  .switch-container button {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    padding: 0.4rem 1rem;
-    cursor: pointer;
-    border-radius: 8px;
-    border: none;
-    background: var(--card);
-    color: var(--text);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background-color 0.2s, color 0.2s;
-  }
-  .switch-container button.active {
-    background: var(--accent);
-    color: var(--text);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .sort-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    gap: 1rem;
-  }
-  .sort-container select {
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1rem;
   }
 </style>
 </head>
 <body>
-<div class="container">
-  <button class="toggle-dark" id="darkToggle" aria-label="Toggle dark mode">🌓</button>
-  <h1>AAP</h1>
-  <p class="submotto">Agenda Afacerilor Personale</p>
-
-  <div class="switch-container" role="radiogroup" aria-label="Alege lista">
-    <button id="personalListBtn" class="active" aria-pressed="true" type="button">Afaceri Interne</button>
-    <button id="workListBtn" aria-pressed="false" type="button">Afaceri Externe</button>
-    <button id="operationalListBtn" aria-pressed="false" type="button">Afaceri Operaționale</button>
-  </div>
-
-  <div class="sort-container">
-    <label for="sortSelect">Sortare:</label>
-    <select id="sortSelect" aria-label="Selectează criteriul de sortare">
-      <option value="added">Data adăugării</option>
-      <option value="deadline">Deadline</option>
-      <option value="priority">Prioritate</option>
-    </select>
-  </div>
-
-  <form id="taskForm" autocomplete="off">
-    <input type="text" id="title" placeholder="Ce ai de făcut?" required aria-required="true" />
-    <textarea id="details" rows="2" placeholder="Detalii (opțional)"></textarea>
-    <select id="priority">
-      <option value="normal">Prioritate: Normal</option>
-      <option value="urgent">Prioritate: Urgent</option>
-    </select>
-    <select id="status">
-      <option value="in">Status: În curs</option>
-      <option value="out">Status: Gata</option>
-    </select>
-    <select id="tags" aria-label="Selectează tag-ul">
-      <option value="">Fără tag</option>
-      <option value="important" style="color:#dc3545;">Important</option>
-      <option value="work" style="color:#007bff;">Muncă</option>
-      <option value="personal" style="color:#28a745;">Personal</option>
-      <option value="urgent" style="color:#ff6600;">Urgent</option>
-    </select>
-    <div class="calendar-time-container">
-      <input type="text" id="deadline" placeholder="Deadline (dd/mm/yyyy)" readonly aria-label="Deadline" />
-      <input type="time" id="deadlineTime" aria-label="Ora deadline" />
-    </div>
-    <div class="calendar" id="calendar" role="dialog" aria-modal="true" aria-label="Calendar">
-      <div class="calendar-header">
-        <button id="prevMonth" type="button" aria-label="Luna anterioară">‹</button>
-        <div class="calendar-title" id="calendarTitle">Iunie 2025</div>
-        <button id="nextMonth" type="button" aria-label="Luna următoare">›</button>
+<div class="app-shell">
+  <section class="hero" aria-label="Introducere AAP">
+    <div class="topbar">
+      <div class="brand-lockup">
+        <div class="logo-mark" aria-hidden="true">AAP</div>
+        <div>
+          <p class="eyebrow">Agenda ta personală</p>
+          <h1>AAP</h1>
+        </div>
       </div>
-      <div class="calendar-grid" id="calendarDays" role="grid"></div>
+      <button class="toggle-dark" id="darkToggle" aria-label="Comută dark mode">🌓</button>
     </div>
-    <button type="submit" class="submitsave">Salvează task</button>
-  </form>
+    <p class="submotto">Agenda Afacerilor Personale — un loc simplu pentru lucrurile care trebuie urmărite, rezolvate și bifate.</p>
 
-  <ul id="taskList" aria-live="polite" aria-label="Lista taskurilor"></ul>
+    <div class="dashboard" aria-label="Rezumat taskuri">
+      <div class="stat-card">
+        <p class="stat-label">Total</p>
+        <p class="stat-value" id="statTotal">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">În curs</p>
+        <p class="stat-value" id="statInProgress">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Urgente</p>
+        <p class="stat-value" id="statUrgent">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Depășite</p>
+        <p class="stat-value" id="statOverdue">0</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="workspace">
+    <section class="panel" aria-label="Adaugă task">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">Adaugă o afacere</h2>
+          <p class="panel-note">Scrie rapid ce ai de făcut. Restul e opțional.</p>
+        </div>
+      </div>
+
+      <form id="taskForm" autocomplete="off">
+        <input type="text" id="title" placeholder="Ce ai de făcut?" required aria-required="true" />
+        <textarea id="details" rows="2" placeholder="Detalii, context sau pași următori (opțional)"></textarea>
+
+        <div class="form-grid">
+          <select id="priority" aria-label="Prioritate">
+            <option value="normal">Prioritate: Normal</option>
+            <option value="urgent">Prioritate: Urgent</option>
+          </select>
+          <select id="status" aria-label="Status">
+            <option value="in">Status: În curs</option>
+            <option value="out">Status: Gata</option>
+          </select>
+        </div>
+
+        <select id="tags" aria-label="Selectează tag-ul">
+          <option value="">Fără tag</option>
+          <option value="important">Important</option>
+          <option value="work">Muncă</option>
+          <option value="personal">Personal</option>
+          <option value="urgent">Urgent</option>
+        </select>
+
+        <div class="calendar-time-container">
+          <input type="text" id="deadline" placeholder="Deadline (dd/mm/yyyy)" readonly aria-label="Deadline" />
+          <input type="time" id="deadlineTime" aria-label="Ora deadline" />
+        </div>
+
+        <div class="calendar" id="calendar" role="dialog" aria-modal="true" aria-label="Calendar">
+          <div class="calendar-header">
+            <button id="prevMonth" type="button" aria-label="Luna anterioară">‹</button>
+            <div class="calendar-title" id="calendarTitle">Iunie 2025</div>
+            <button id="nextMonth" type="button" aria-label="Luna următoare">›</button>
+          </div>
+          <div class="calendar-grid" id="calendarDays" role="grid"></div>
+        </div>
+
+        <button type="submit" class="submit-save">Salvează task</button>
+      </form>
+    </section>
+
+    <section class="panel" aria-label="Lista taskurilor">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title" id="currentListTitle">Afaceri Interne</h2>
+          <p class="panel-note">Schimbă lista, sortează și revino rapid la ce contează.</p>
+        </div>
+      </div>
+
+      <div class="switch-container" role="radiogroup" aria-label="Alege lista">
+        <button id="personalListBtn" class="active" aria-pressed="true" type="button">Interne</button>
+        <button id="workListBtn" aria-pressed="false" type="button">Externe</button>
+        <button id="operationalListBtn" aria-pressed="false" type="button">Operaționale</button>
+      </div>
+
+      <div class="sort-container">
+        <label for="sortSelect">Sortare</label>
+        <select id="sortSelect" aria-label="Selectează criteriul de sortare">
+          <option value="added">Data adăugării</option>
+          <option value="deadline">Deadline</option>
+          <option value="priority">Prioritate</option>
+        </select>
+      </div>
+
+      <ul id="taskList" aria-live="polite" aria-label="Lista taskurilor"></ul>
+    </section>
+  </main>
+
+  <div class="floater">by @mhpetcu</div>
 </div>
 
-<div class="floater">by @mhpetcu</div>
-
 <script>
-  // Formatează data din yyyy-mm-dd în dd/mm/yyyy
   const formatDateDisplay = (dateStr) => {
     if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-');
     return `${day}/${month}/${year}`;
   };
 
-  // Parsează data din dd/mm/yyyy în yyyy-mm-dd
   const parseDateInput = (displayStr) => {
     if (!displayStr) return '';
     const parts = displayStr.split('/');
@@ -346,17 +756,23 @@
     return `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
   };
 
-  // Dark mode toggle
-  const darkToggle = document.getElementById("darkToggle");
-  darkToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+  const isOverdue = (task) => {
+    if (!task.deadline || task.status !== 'in') return false;
+    const now = new Date();
+    const dlDate = new Date(task.deadline + 'T' + (task.deadlineTime || '23:59') + ':00');
+    return dlDate < now;
+  };
+
+  const darkToggle = document.getElementById('darkToggle');
+  darkToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark'));
   });
-  if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
+
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark');
   }
 
-  // Calendar & Date selection
   (() => {
     const calendar = document.getElementById('calendar');
     const deadlineInput = document.getElementById('deadline');
@@ -366,6 +782,7 @@
     const nextMonthBtn = document.getElementById('nextMonth');
 
     const days = ['Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sâ', 'Du'];
+    const months = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'];
 
     let currentDate = new Date();
     let currentYear = currentDate.getFullYear();
@@ -374,7 +791,7 @@
 
     function buildCalendar(year, month) {
       calendarDays.innerHTML = '';
-      calendarTitle.textContent = ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'][month] + ' ' + year;
+      calendarTitle.textContent = `${months[month]} ${year}`;
 
       days.forEach(day => {
         const d = document.createElement('div');
@@ -389,8 +806,7 @@
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
       for(let i = 0; i < startDay; i++) {
-        const emptyCell = document.createElement('div');
-        calendarDays.appendChild(emptyCell);
+        calendarDays.appendChild(document.createElement('div'));
       }
 
       for(let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
@@ -435,13 +851,7 @@
     };
 
     deadlineInput.addEventListener('click', () => {
-      if (calendar.style.display === 'block') {
-        calendar.style.display = 'none';
-      } else {
-        calendar.style.top = (deadlineInput.offsetTop + deadlineInput.offsetHeight + 5) + 'px';
-        calendar.style.left = deadlineInput.offsetLeft + 'px';
-        calendar.style.display = 'block';
-      }
+      calendar.style.display = calendar.style.display === 'block' ? 'none' : 'block';
     });
 
     document.addEventListener('click', e => {
@@ -457,18 +867,36 @@
     buildCalendar(currentYear, currentMonth);
   })();
 
-  // Gestionare task-uri multiple liste, sortare și render
   const personalListBtn = document.getElementById('personalListBtn');
   const workListBtn = document.getElementById('workListBtn');
   const operationalListBtn = document.getElementById('operationalListBtn');
+  const currentListTitle = document.getElementById('currentListTitle');
   const sortSelect = document.getElementById('sortSelect');
   const taskListElem = document.getElementById('taskList');
   const taskForm = document.getElementById('taskForm');
+
+  const statTotal = document.getElementById('statTotal');
+  const statInProgress = document.getElementById('statInProgress');
+  const statUrgent = document.getElementById('statUrgent');
+  const statOverdue = document.getElementById('statOverdue');
 
   const STORAGE_KEYS = {
     personal: 'tasks_personal',
     work: 'tasks_work',
     operational: 'tasks_operational'
+  };
+
+  const LIST_LABELS = {
+    personal: 'Afaceri Interne',
+    work: 'Afaceri Externe',
+    operational: 'Afaceri Operaționale'
+  };
+
+  const TAG_LABELS = {
+    important: 'Important',
+    work: 'Muncă',
+    personal: 'Personal',
+    urgent: 'Urgent'
   };
 
   let currentList = 'personal';
@@ -481,9 +909,7 @@
 
   function compareTasks(a, b) {
     const criteria = sortSelect.value;
-    if (criteria === 'added') {
-      return a._addedAt - b._addedAt;
-    }
+    if (criteria === 'added') return (a._addedAt || 0) - (b._addedAt || 0);
     if (criteria === 'deadline') {
       if (!a.deadline && b.deadline) return 1;
       if (a.deadline && !b.deadline) return -1;
@@ -503,9 +929,25 @@
     return 0;
   }
 
+  function updateStats() {
+    statTotal.textContent = tasks.length;
+    statInProgress.textContent = tasks.filter(t => t.status === 'in').length;
+    statUrgent.textContent = tasks.filter(t => t.priority === 'urgent').length;
+    statOverdue.textContent = tasks.filter(isOverdue).length;
+  }
+
   function renderTasks() {
     taskListElem.innerHTML = '';
     tasks.sort(compareTasks);
+    updateStats();
+
+    if (!tasks.length) {
+      const empty = document.createElement('li');
+      empty.className = 'empty-state';
+      empty.innerHTML = '<div><strong>Nicio afacere în listă.</strong><span>Adaugă primul task din panoul din stânga.</span></div>';
+      taskListElem.appendChild(empty);
+      return;
+    }
 
     tasks.forEach((t, i) => {
       const li = document.createElement('li');
@@ -514,12 +956,27 @@
       const taskInfo = document.createElement('div');
       taskInfo.className = 'task-info';
 
+      const titleRow = document.createElement('div');
+      titleRow.className = 'task-title-row';
+
       const titleP = document.createElement('p');
+      titleP.className = 'task-title';
       titleP.textContent = t.title;
-      titleP.style.fontWeight = '600';
+      titleRow.appendChild(titleP);
+
+      if (t.tag) {
+        const tagSpan = document.createElement('span');
+        tagSpan.className = 'tag-badge';
+        tagSpan.textContent = TAG_LABELS[t.tag] || t.tag;
+        titleRow.appendChild(tagSpan);
+      }
 
       const detailsP = document.createElement('p');
-      detailsP.textContent = t.details;
+      detailsP.className = 'task-details';
+      detailsP.textContent = t.details || 'Fără detalii adăugate.';
+
+      const metaRow = document.createElement('div');
+      metaRow.className = 'meta-row';
 
       const priorityBadge = document.createElement('span');
       priorityBadge.className = 'badge ' + (t.priority === 'urgent' ? 'urgent' : 'normal');
@@ -529,45 +986,21 @@
       statusBadge.className = 'badge ' + (t.status === 'in' ? 'status-in' : 'status-out');
       statusBadge.textContent = t.status === 'in' ? 'În curs' : 'Gata';
 
-      const deadlineP = document.createElement('p');
+      metaRow.appendChild(priorityBadge);
+      metaRow.appendChild(statusBadge);
+
       if(t.deadline) {
+        const deadlineSpan = document.createElement('span');
+        deadlineSpan.className = 'deadline-pill' + (isOverdue(t) ? ' overdue' : '');
         let deadlineStr = formatDateDisplay(t.deadline);
-        if(t.deadlineTime) deadlineStr += ' ' + t.deadlineTime;
-        deadlineP.textContent = 'Deadline: ' + deadlineStr;
-
-        // Evidențiere task-uri depășite deadline
-        const now = new Date();
-        const dlDate = new Date(t.deadline + 'T' + (t.deadlineTime || '23:59') + ':00');
-        if(t.status === 'in' && dlDate < now) {
-          deadlineP.classList.add('overdue');
-        }
+        if(t.deadlineTime) deadlineStr += ' · ' + t.deadlineTime;
+        deadlineSpan.textContent = isOverdue(t) ? 'Depășit: ' + deadlineStr : 'Deadline: ' + deadlineStr;
+        metaRow.appendChild(deadlineSpan);
       }
 
-      // Tag afisat cu culoare
-      const tagSpan = document.createElement('span');
-      if(t.tag) {
-        tagSpan.textContent = t.tag;
-        tagSpan.style.padding = '0.2rem 0.4rem';
-        tagSpan.style.marginLeft = '0.5rem';
-        tagSpan.style.borderRadius = '5px';
-        tagSpan.style.fontSize = '0.8rem';
-        tagSpan.style.color = '#fff';
-
-        switch(t.tag) {
-          case 'important': tagSpan.style.backgroundColor = '#dc3545'; break;
-          case 'work': tagSpan.style.backgroundColor = '#007bff'; break;
-          case 'personal': tagSpan.style.backgroundColor = '#28a745'; break;
-          case 'urgent': tagSpan.style.backgroundColor = '#ff6600'; break;
-          default: tagSpan.style.backgroundColor = '#6c757d';
-        }
-      }
-
-      taskInfo.appendChild(titleP);
+      taskInfo.appendChild(titleRow);
       taskInfo.appendChild(detailsP);
-      taskInfo.appendChild(priorityBadge);
-      taskInfo.appendChild(statusBadge);
-      taskInfo.appendChild(deadlineP);
-      if(t.tag) taskInfo.appendChild(tagSpan);
+      taskInfo.appendChild(metaRow);
 
       const taskActions = document.createElement('div');
       taskActions.className = 'task-actions';
@@ -579,10 +1012,12 @@
         editIndex = i;
         fillFormWithTask(t);
         taskForm.querySelector('button[type=submit]').textContent = 'Modifică task';
+        window.scrollTo({ top: document.querySelector('.workspace').offsetTop - 12, behavior: 'smooth' });
       };
 
       const deleteBtn = document.createElement('button');
       deleteBtn.type = 'button';
+      deleteBtn.className = 'delete-btn';
       deleteBtn.textContent = 'Șterge';
       deleteBtn.addEventListener('click', () => {
         if(confirm('Ștergi acest task?')) {
@@ -595,7 +1030,6 @@
 
       taskActions.appendChild(editBtn);
       taskActions.appendChild(deleteBtn);
-
       li.appendChild(taskInfo);
       li.appendChild(taskActions);
       taskListElem.appendChild(li);
@@ -630,8 +1064,9 @@
       deadline: parseDateInput(document.getElementById('deadline').value),
       deadlineTime: document.getElementById('deadlineTime').value,
       tag: document.getElementById('tags').value,
-      _addedAt: Date.now()
+      _addedAt: editIndex !== null && tasks[editIndex] ? tasks[editIndex]._addedAt : Date.now()
     };
+
     if (!newTask.title) return alert('Titlul este obligatoriu.');
 
     if(editIndex !== null) {
@@ -639,6 +1074,7 @@
     } else {
       tasks.push(newTask);
     }
+
     saveTasks();
     renderTasks();
     clearForm();
@@ -652,6 +1088,8 @@
   function switchList(listName) {
     if (currentList === listName) return;
     currentList = listName;
+    currentListTitle.textContent = LIST_LABELS[currentList];
+
     personalListBtn.classList.toggle('active', currentList === 'personal');
     personalListBtn.setAttribute('aria-pressed', currentList === 'personal');
     workListBtn.classList.toggle('active', currentList === 'work');
@@ -664,7 +1102,6 @@
     renderTasks();
   }
 
-  // Inițial
   renderTasks();
 </script>
 </body>
